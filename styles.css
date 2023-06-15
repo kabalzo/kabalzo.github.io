@@ -1,0 +1,15 @@
+body {
+	background-color: black;
+}
+h1 {
+	background-image: url("./images/vampire1.jpg");
+	color: black;
+	line-height: 700px;
+}
+h3 {
+	color: green;
+	font-weight: bold;
+}
+li {
+	color: crimson;
+}

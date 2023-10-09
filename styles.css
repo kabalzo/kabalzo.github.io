@@ -2,12 +2,16 @@ body {
 	background-color: black;
 }
 h1 {
-	background-image: url("./images/vampire1.jpg");
+	color: white;
+	font-size: x-large;
+}
+h2 {
+	/*background-image: url("./images/vampire1.jpg");*/
 	color: black;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
-	height: 700px;
+	/*height: 700px;*/
   	
 }
 h3 {
@@ -21,7 +25,7 @@ h5 {
 	width: 65px;
 }
 li {
-	color: crimson;
+	color: goldenrod;
 	font-size: large;
 	font-weight: bold;
 	font-family: 'Courier New', Courier, monospace;
@@ -67,6 +71,34 @@ li {
 }
 .rt:hover, .rt2:hover {
 	transform: scale(1.25);
+}
+.menu {
+	height: 100px;
+}
+.menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+  }
+.menu li {
+	float: left;
+	font-size: 25px;
+	font-weight: bold;
+}
+.menu li a {
+	display: block;
+	color: darkred;
+	text-align: left;
+	padding: 28px 32px;
+	text-decoration: none;
+}
+.menu a:visited {
+	color: darkred;
+}
+.menu a:hover {
+	background-color: #111;
 }
 
 

@@ -2,11 +2,72 @@ body {
 	background-color: black;
 }
 h1 {
-	background-image: url("./images/goodbye.jpg");
-	color: navy;
+	background-image: url("./images/vampire1.jpg");
+	color: black;
 	background-repeat: no-repeat;
 	background-size: cover;
 	background-position: center;
 	height: 700px;
   	
 }
+h3 {
+	color: green;
+	font-weight: bold;
+}
+h5 {
+	color: white;
+	position: relative; left: 25px;
+	background-color: blue;
+	width: 65px;
+}
+li {
+	color: crimson;
+	font-size: large;
+	font-weight: bold;
+	font-family: 'Courier New', Courier, monospace;
+}
+.container {
+	/* Setup Flexbox */
+	display: -webkit-box;
+	display: -moz-box;
+	display: -ms-flexbox;
+	display: -webkit-flex;
+	display: flex;
+	/* Reverse Column Order */
+	-webkit-flex-flow: column-reverse;
+	flex-flow: column-reverse;
+}
+.movie {
+	height: 320px;
+	padding: auto;
+	position: relative;
+}
+.rating {
+	width: 400px;
+	height: 300px;
+	padding: auto;
+}
+.rt, .rt2 {
+	width: 200px;
+    height: 275px;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+	left: 600px;
+	top: 0;
+}
+.rt2 {
+	left: 900px;
+}
+.rt img, .rt2 img {
+	position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+.rt:hover, .rt2:hover {
+	transform: scale(1.25);
+}
+
+
+

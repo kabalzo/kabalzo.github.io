@@ -11,6 +11,32 @@ body {
 	background-size: contain;
 	height: 400px;
 }
+.h1 {
+	color: white;
+	font-size: x-large;
+	font-weight: bolder;
+}
+.calc {
+	color: goldenrod;
+	font-size:large;
+	font-weight: bolder;
+}
+#ranking {
+	color: red;
+	font-weight: bold;
+	font-size: 200px;
+	width: 400px;
+	height: 400px;
+	padding: auto;
+}
+#rank {
+	height: 60px;
+	width: 60px;
+	background-color: green;
+	color: black;
+	font-size: large;
+	font-weight: bold;
+}
 h2 {
 	/*background-image: url("./images/vampire1.jpg");*/
 	color: black;

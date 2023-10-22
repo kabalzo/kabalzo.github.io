@@ -24,17 +24,21 @@ body {
 #ranking {
 	color: red;
 	font-weight: bold;
-	font-size: 200px;
+	font-size: 400px;
 	width: 400px;
 	height: 400px;
 	padding: auto;
+	left: 700px;
+	position: absolute;
+	top: 250px;
 }
 #rank {
 	height: 60px;
-	width: 60px;
+	width: 180px;
 	background-color: green;
+	text-align: center;
 	color: black;
-	font-size: large;
+	font-size: x-large;
 	font-weight: bold;
 }
 h2 {
@@ -129,6 +133,7 @@ li {
 .menu a:hover {
 	background-color: #111;
 }
+  
 
 
 

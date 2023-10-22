@@ -16,6 +16,13 @@ body {
 	font-size: x-large;
 	font-weight: bolder;
 }
+.about {
+	color: white;
+	font-size: x-large;
+	font-weight: bolder;
+	position: absolute;
+	top: 650px;
+}
 .calc {
 	color: goldenrod;
 	font-size:large;
@@ -30,7 +37,7 @@ body {
 	padding: auto;
 	left: 700px;
 	position: absolute;
-	top: 250px;
+	top: 650px;
 }
 #rank {
 	height: 60px;
@@ -55,7 +62,8 @@ h5 {
 	color: white;
 	position: relative; left: 25px;
 	background-color: blue;
-	width: 65px;
+	width: 120px;
+	text-align: center;
 }
 li {
 	color: goldenrod;

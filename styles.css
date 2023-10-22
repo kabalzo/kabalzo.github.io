@@ -10,6 +10,7 @@ body {
 	background: url("./images/vampire1.jpg") left top no-repeat, url("./images/nic_fist.jpg") center top no-repeat, url("./images/nic_con.jpg") right top no-repeat;
 	background-size: contain;
 	height: 400px;
+	
 }
 .h1 {
 	color: white;

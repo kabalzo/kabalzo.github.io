@@ -97,7 +97,7 @@
 					ceiling = tierValues[key]
 				}
 				//Check for trump case: n-1 votes for one grade equals that grade, where n is the number of votes
-				if (value == (participantCount-1)) {
+				if (value == (participantCount-1) && value > 1) {
 					finalGrade = key
 					trump = true
 				} 

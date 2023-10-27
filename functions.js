@@ -31,6 +31,8 @@ function tierListCalculator() {
 			else if (participantCount == 1) {
 				finalGrade = key
 			}
+			
+			/*
 			else {
 				if (ceiling < tierValues[key] && gradeCounts[key] > 0) {
 					ceiling = tierValues[key]
@@ -46,27 +48,27 @@ function tierListCalculator() {
 					finalGrade = key
 					trump = true
 				}
-			}
+			}*/
 		}
 		
 		//Assign a letter grade based on the average score if a trump case has not been met
 		if (trump == false) {
-			if (scoresAverage >= 4.6) {
+			if (scoresAverage >= 4.5) {
 				finalGrade = "S"
 			} 
-			else if (scoresAverage >= 3.6) {
+			else if (scoresAverage >= 3.5) {
 				finalGrade = "A"
 			}
-			else if (scoresAverage >= 2.6) {
+			else if (scoresAverage >= 2.5) {
 				finalGrade = "B"
 			}
-			else if (scoresAverage >= 1.6) {
+			else if (scoresAverage >= 1.5) {
 				finalGrade = "C"
 			}
-			else if (scoresAverage >= 0.6) {
+			else if (scoresAverage >= 0.5) {
 				finalGrade = "D"
 			}
-			else if (scoresAverage <= 0.5) {
+			else if (scoresAverage <= 0.4) {
 				finalGrade = "F"
 			}
 		}

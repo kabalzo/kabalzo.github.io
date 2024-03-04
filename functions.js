@@ -104,3 +104,10 @@ function myPassword() {
 	}());
 	alert('Welcome, ye of exquisite taste and culture.');
 }
+
+function getData() {
+	var data = $.csv.toObjects(Book1.csv);
+	console.log(data)
+}
+
+getData()

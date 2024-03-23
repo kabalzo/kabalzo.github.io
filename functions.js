@@ -104,10 +104,41 @@ function myPassword() {
 	}());
 	alert('Welcome, ye of exquisite taste and culture.');
 }
+let value1 = null;
+let value2 = undefined;
+let value3 = false;
+let value4 = NaN;
+
+value1 = value1 || 0;
+value2 = value2 || 0;
+value3 = value3 || 0;
+value4 = value4 || 0;
 
 function getData() {
-	var data = $.csv.toObjects(Book1.csv);
-	console.log(data)
+	const fs = require("fs");
+	const readline = require("readline");
+
+	const stream = fs.createReadStream("./Book1.csv");
+	const reader = readline.createInterface({ input: stream });
+
+	let data = [];
+
+	reader.on("line", row => {
+	// 👇 split a row string into an array
+	// then push into the data array
+	data.push(row.split(","));
+	});
+
+	reader.on("close", () => {
+	// 👇 reached the end of file
+		console.log((data[0][1]+data[0][2]+data[0][3]+data[0][4]+data[0][5]+data[0][6])/6);
+		console.log(data[0][1]);
+		console.log(data[0][2]);
+		console.log(data[0][3]);
+		console.log(data[0][4]);
+		console.log(data[0][5]);
+		console.log(data[0][6]);
+	});
 }
 
 getData()

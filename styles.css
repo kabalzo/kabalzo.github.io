@@ -14,14 +14,6 @@ body {
 	font-weight: bolder;
 }
 
-.about {
-	color: white;
-	font-size: x-large;
-	font-weight: bolder;
-	position: absolute;
-	top: 650px;
-}
-
 .calc {
 	color: goldenrod;
 	font-size:large;
@@ -91,6 +83,21 @@ li {
 
 .movie {
 	height: 320px;
+	padding: auto;
+	position: relative;
+}
+
+.stuff {
+	color: darkred;
+	font-size: large;
+	font-weight: bolder;
+	height: 100px;
+	padding: auto;
+	position: auto;
+}
+
+.buffer {
+	height: 100px;
 	padding: auto;
 	position: relative;
 }

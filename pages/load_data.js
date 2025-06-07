@@ -115,14 +115,15 @@ async function loadTable() {
     }
     
     try {
-        // Query the table with calculated average
+        // Query the table with calculated average - reordered columns and improved NULL handling
         const results = db.exec(`
             SELECT 
                 id,
                 title,
-                date,
                 year,
+                rated,
                 pick,
+                date,
                 tyler,
                 alexb,
                 trevor,
@@ -131,19 +132,40 @@ async function loadTable() {
                 alexd,
                 colin,
                 other,
-                ROUND(
-                    (COALESCE(tyler, 0) + COALESCE(alexb, 0) + COALESCE(trevor, 0) + 
-                     COALESCE(jordan, 0) + COALESCE(drew, 0) + COALESCE(alexd, 0) + 
-                     COALESCE(colin, 0) + COALESCE(other, 0)) / 
-                    (CASE WHEN tyler IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN alexb IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN trevor IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN jordan IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN drew IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN alexd IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN colin IS NOT NULL THEN 1 ELSE 0 END +
-                     CASE WHEN other IS NOT NULL THEN 1 ELSE 0 END), 2
-                ) as average
+                CASE 
+                    WHEN (
+                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
+                    ) > 0 
+                    THEN ROUND(
+                        (
+                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
+                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
+                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
+                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
+                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
+                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
+                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
+                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
+                        ) * 1.0 / (
+                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
+                        ), 2
+                    )
+                    ELSE NULL
+                END as average
             FROM ${tableName}
         `);
         

@@ -1,0 +1,257 @@
+body {
+	background-color: black;
+	margin: 0;
+	padding: 0;
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+.top {
+	color: white;
+	font-size: x-large;
+	height: 100px;
+}
+
+.container {
+	flex: 1; /* This makes the container take up remaining space */
+	margin-bottom: 20px; /* Add some space before footer */
+}
+
+.options1 {
+	display: flex;
+	justify-content: space-around; /* Distributes items evenly with space around them */
+	align-items: center; /* Vertically centers the items */
+	margin-bottom: 20px;
+}
+
+.options1 h1 {
+	color: white;
+	font-size: x-large;
+	margin: 0 20px; /* Add some horizontal spacing between items */
+	cursor: pointer; /* Makes them look clickable if you plan to add functionality */
+}
+
+.options2 {
+	display: flex;
+	justify-content: space-around; /* Distributes items evenly with space around them */
+	align-items: center; /* Vertically centers the items */
+	margin-bottom: 20px;
+}
+
+.options2 h1 {
+	color: white;
+	font-size: x-large;
+	margin: 0 20px; /* Add some horizontal spacing between items */
+	cursor: pointer; /* Makes them look clickable if you plan to add functionality */
+}
+
+.container h1 {
+	color: white;
+	font-size: x-large;
+	/* Removed height: 100px; - this was forcing them to stack */
+}
+
+.container > h1 {
+	/* This targets h1 directly under container (not in options) */
+	height: 100px;
+}
+
+.table-container {
+	color: white;
+	font-size: medium; /* Reduced from large to fit more columns */
+	margin-bottom: 50px;
+	max-width: 95%; /* Increased from 80% to accommodate more columns */
+	margin-left: auto;
+	margin-right: auto; /* Center the table */
+	overflow-x: auto; /* Allow horizontal scrolling if needed */
+}
+
+.table-container table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-bottom: 50px;
+	table-layout: auto; /* Changed from fixed to auto for better column sizing */
+	min-width: 1200px; /* Ensure minimum width for readability */
+}
+
+.table-container th,
+.table-container td {
+	padding: 6px 8px; /* Reduced padding to fit more columns */
+	border: 1px solid #333;
+	text-align: center; /* Center align for ratings */
+	word-wrap: break-word; /* Handle long titles */
+	overflow: hidden;
+	white-space: nowrap; /* Prevent text wrapping in cells */
+}
+
+/* ID column */
+.table-container th:nth-child(1),
+.table-container td:nth-child(1) {
+	min-width: 50px;
+	font-weight: bold;
+	color: #ccc;
+}
+
+/* Title column - left align and allow more width */
+.table-container th:nth-child(2),
+.table-container td:nth-child(2) {
+	text-align: left;
+	min-width: 200px;
+	max-width: 300px;
+	white-space: normal; /* Allow wrapping for titles */
+}
+
+/* Date column */
+.table-container th:nth-child(3),
+.table-container td:nth-child(3) {
+	min-width: 80px;
+}
+
+/* Year column */
+.table-container th:nth-child(4),
+.table-container td:nth-child(4) {
+	min-width: 60px;
+}
+
+/* Pick column */
+.table-container th:nth-child(5),
+.table-container td:nth-child(5) {
+	min-width: 60px;
+}
+
+/* Rating columns (tyler, alexb, trevor, jordan, drew, alexd, colin, other) */
+.table-container th:nth-child(n+6):nth-child(-n+13),
+.table-container td:nth-child(n+6):nth-child(-n+13) {
+	min-width: 50px;
+	font-weight: bold;
+}
+
+/* Average column - highlight it */
+.table-container th:nth-child(14),
+.table-container td:nth-child(14) {
+	min-width: 60px;
+	background-color: #444;
+	font-weight: bold;
+	color: #ffd700; /* Gold color for average */
+}
+
+.table-container th {
+	background-color: #333;
+	font-weight: bold;
+	position: sticky;
+	top: 0; /* Sticky header when scrolling */
+	z-index: 10;
+}
+
+/* Hover effects for data rows */
+.table-container tbody tr:hover {
+	background-color: #222;
+}
+
+/* Error styling */
+.error {
+	color: #ff6b6b;
+	background-color: #330000;
+	padding: 10px;
+	border-radius: 5px;
+	margin: 20px;
+	text-align: center;
+}
+
+.movie {
+	height: 320px;
+	padding: auto;
+	position: relative;
+}
+
+.stuff {
+	color: darkred;
+	font-size: large;
+	font-weight: bolder;
+	height: 100px;
+	padding: auto;
+	position: auto;
+}
+
+.buffer {
+	height: 100px;
+	padding: auto;
+	position: relative;
+}
+
+.rating {
+	width: 400px;
+	height: 300px;
+	padding: auto;
+}
+
+.rt, .rt2 {
+	width: 200px;
+    height: 275px;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+	left: 600px;
+	top: 0;
+}
+
+.rt2 {
+	left: 900px;
+}
+
+.rt img, .rt2 img {
+	position: relative;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.rt:hover, .rt2:hover {
+	transform: scale(1.25);
+}
+
+.menu {
+	height: 100px;
+}
+
+.menu ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+}
+
+.menu li {
+	float: left;
+	font-size: 25px;
+	font-weight: bold;
+}
+
+.menu li a {
+	display: block;
+	color: darkred;
+	text-align: left;
+	padding: 28px 32px;
+	text-decoration: none;
+}
+
+.menu a:visited {
+	color: darkred;
+}
+
+.menu a:hover {
+	background-color: #111;
+}
+
+footer {
+	text-align: center;
+	padding: 20px 3px;
+	background-color: slategray;
+	color: wheat;
+	margin-top: auto; /* This pushes footer to bottom */
+	clear: both;
+	position: relative;
+	z-index: 1000; /* Ensure footer is on top */
+}

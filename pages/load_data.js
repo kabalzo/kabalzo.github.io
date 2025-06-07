@@ -1,5 +1,5 @@
 // Configuration - EDIT THESE VALUES
-const DEFAULT_DB_PATH = '../movieboys.db';  // Path to your database file (adjusted for pages folder)
+const DEFAULT_DB_PATH = 'movieboys.db';  // Path to your database file (adjusted for pages folder)
 const DEFAULT_TABLE = 'movies';          // Your table name
 
 let db = null;

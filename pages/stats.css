@@ -70,7 +70,8 @@ body {
 .table-container table {
 	width: 100%;
 	border-collapse: collapse;
-	margin-bottom: 50px;
+	margin-top: 0;
+    padding-top: 0;
 	table-layout: auto; /* Changed from fixed to auto for better column sizing */
 	min-width: 1300px; /* Increased minimum width for additional column */
 }

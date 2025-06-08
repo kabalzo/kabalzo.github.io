@@ -118,6 +118,19 @@ li {
 	top: 0;
 }
 
+.synopsis {
+	color: white;
+	font-size: small;
+	width: 300px;
+    height: 200px;
+    display: block;
+    position: absolute;
+    overflow: hidden;
+	top: 0;
+	text-align: center;
+	right: 700px;
+}
+
 .rt2 {
 	left: 900px;
 }
@@ -129,7 +142,7 @@ li {
     width: 100%;
 }
 
-.rt:hover, .rt2:hover {
+.rt:hover, .rt2:hover, .synopsis:hover {
 	transform: scale(1.25);
 }
 

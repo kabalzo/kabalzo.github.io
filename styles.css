@@ -114,7 +114,7 @@ li {
     display: block;
     position: absolute;
     overflow: hidden;
-	left: 600px;
+	left: 300px;
 	top: 0;
 }
 
@@ -126,9 +126,9 @@ li {
     display: block;
     position: absolute;
     overflow: hidden;
-	top: 0;
+	top: 75px;
 	text-align: center;
-	right: 700px;
+	left: 650px;
 }
 
 .rt2 {
@@ -188,67 +188,36 @@ footer {
 	bottom: 200px;
 }
 
-/* Photo Banner */
-#banner {
-    width: 100%;
-    overflow: hidden;
-    margin: 10px auto;
-    background: black;
+/* Movie Boys Rating Styles */
+.movieboys-rating {
+    width: 150px;
+    height: 275px;
+    display: block;
+    position: absolute;
+    left: 1200px;
+    top: 0;
+    background-color: #1a1a1a;
+    border: 3px solid goldenrod;
+    border-radius: 10px;
+    padding: 15px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
-.photobanner {
-	height: 233px;
-	width: 3550px;
-	margin-bottom: 80px;
+.movieboys-rating h4 {
+    color: goldenrod;
+    font-size: 18px;
+    font-weight: bold;
+    margin: 0 0 15px 0;
+    font-family: 'Courier New', Courier, monospace;
 }
 
-.photobanner img {
-	margin-bottom: 10px;
-	margin-right: 0px;
-	height: 233px;
-	width: 350px;
-}
-
-.photobanner img  {
-    -webkit-transition: all 3s ease;
-    -moz-transition: all 3s ease;
-    -o-transition: all 3s ease;
-    -ms-transition: all 3s ease;
-    transition: all 3s ease;
-}
-
-/*keyframe animations*/
-.first {
-    -webkit-animation: bannermove 30s linear infinite;
-       -moz-animation: bannermove 30s linear infinite;
-        -ms-animation: bannermove 30s linear infinite;
-         -o-animation: bannermove 30s linear infinite;
-            animation: bannermove 30s linear infinite;
-}
-  
-@keyframes "bannermove" {
-	0% {margin-left: 0px;}
-	100% {margin-left: -2130px;}
-}
-	
-@-moz-keyframes bannermove {
-	0% {margin-left: 0px;}
-	100% {margin-left: -2130px;}
-}
-
-@-webkit-keyframes "bannermove" {
-	0% {margin-left: 0px;}
-	100% {margin-left: -2130px;}
-}
-
-@-ms-keyframes "bannermove" {
-	0% {margin-left: 0px;}
-	100% {margin-left: -2130px;}
-}
-
-@-o-keyframes "bannermove" {
-	0% {margin-left: 0px;}
-	100% {margin-left: -2130px;}
+.movieboys-rating .score {
+    color: green;
+    font-size: 48px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
+    margin-top: 50px;
 }
 
 

@@ -109,32 +109,41 @@ li {
 }
 
 .rating {
-	width: 400px;
-	height: 300px;
+	width: 200px;
+	height: 275px;
+	background-color: #1a1a1a;
 	padding: auto;
+	border: 3px solid goldenrod;
+    border-radius: 10px;
 }
 
 .rt, .rt2 {
 	width: 200px;
     height: 275px;
+	background-color: #1a1a1a;
     display: block;
     position: absolute;
     overflow: hidden;
 	left: 300px;
 	top: 0;
+	border: 3px solid goldenrod;
+    border-radius: 10px;
 }
 
 .synopsis {
 	color: white;
 	font-size: small;
 	width: 300px;
-    height: 200px;
+    height: 275px;
+	background-color: #1a1a1a;
     display: block;
     position: absolute;
     overflow: hidden;
-	top: 75px;
+	top: 0px;
 	text-align: center;
 	left: 650px;
+	border: 3px solid goldenrod;
+    border-radius: 10px;
 }
 
 .rt2 {
@@ -172,14 +181,14 @@ li {
 
 .menu li a {
 	display: block;
-	color: darkred;
+	color: #CC6633;
 	text-align: left;
 	padding: 28px 32px;
 	text-decoration: none;
 }
 
 .menu a:visited {
-	color: darkred;
+	color: #CC6633;
 }
 
 .menu a:hover {

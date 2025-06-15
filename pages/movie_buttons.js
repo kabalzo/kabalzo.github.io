@@ -23,7 +23,7 @@ const BUTTON_CONFIG = [
     {
         row: 1,
         id: 'nicPicksBtn',
-        text: '✨ Nic Cage Movies',
+        text: '✨ Nick Cage Movies',
         color: '#2d3a4a',        
         hoverColor: '#3d4a5a',  
         onClick: 'loadNicPicks'
@@ -278,6 +278,25 @@ function displayTopMoviesTable(result, tableName) {
     
     let html = `<h2>🏆 Top 25 Movies by Average Rating</h2>`;
     html += `<p style="color: #ccc; text-align: center; margin-bottom: 20px;">Showing highest rated movies from ${tableName}</p>`;
+
+    // Add summary statistics
+    if (values.length > 0) {
+        const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
+        if (averages.length > 0) {
+            const highestRating = Math.max(...averages);
+            const lowestRating = Math.min(...averages);
+            const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            
+            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
+            html += '<h3 style="margin-top: 0; color: white;">📊 Top 25 Movie Statistics</h3>';
+            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
+            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
+            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
+            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += '</div>';
+        }
+    }
+
     html += '<div class="table-container">';
     html += '<table>';
     
@@ -304,9 +323,14 @@ function displayTopMoviesTable(result, tableName) {
         html += `<td ${rankClass}>${rank}</td>`;
         
         // Add regular columns
-        row.forEach(cell => {
+        row.forEach((cell, cellIndex) => {
             const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            html += `<td>${displayValue}</td>`;
+            // Highlight the pick column to show values
+            if (columns[cellIndex] === 'pick') {
+                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+            } else {
+                html += `<td>${displayValue}</td>`;
+            }
         });
         html += '</tr>';
     });
@@ -416,6 +440,25 @@ function displayBottomMoviesTable(result, tableName) {
     
     let html = `<h2>💩 Bottom 25 Movies by Average Rating</h2>`;
     html += `<p style="color: #ccc; text-align: center; margin-bottom: 20px;">Showing lowest rated movies from ${tableName}</p>`;
+
+    // Add summary statistics
+    if (values.length > 0) {
+        const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
+        if (averages.length > 0) {
+            const highestRating = Math.max(...averages);
+            const lowestRating = Math.min(...averages);
+            const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            
+            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
+            html += '<h3 style="margin-top: 0; color: white;">📊 Bottom 25 Movie Statistics</h3>';
+            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
+            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
+            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
+            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += '</div>';
+        }
+    }
+
     html += '<div class="table-container">';
     html += '<table>';
     
@@ -442,9 +485,14 @@ function displayBottomMoviesTable(result, tableName) {
         html += `<td ${rankClass}>${rank}</td>`;
         
         // Add regular columns
-        row.forEach(cell => {
+        row.forEach((cell, cellIndex) => {
             const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            html += `<td>${displayValue}</td>`;
+            // Highlight the pick column to show values
+            if (columns[cellIndex] === 'pick') {
+                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+            } else {
+                html += `<td>${displayValue}</td>`;
+            }
         });
         html += '</tr>';
     });
@@ -542,8 +590,27 @@ async function loadNicPicks() {
 function displayNicPicksTable(result, tableName) {
     const { columns, values } = result;
     
-    let html = `<h2>✨ Nic's Movie Picks</h2>`;
+    let html = `<h2>✨ Nick's Movie Picks</h2>`;
     html += `<p style="color: #ccc; text-align: center; margin-bottom: 20px;">Nicolas Cage movies (${values.length} movies) - sorted by average rating</p>`;
+
+    // Add summary statistics
+    if (values.length > 0) {
+        const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
+        if (averages.length > 0) {
+            const highestRating = Math.max(...averages);
+            const lowestRating = Math.min(...averages);
+            const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            
+            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
+            html += '<h3 style="margin-top: 0; color: white;">📊 Nicolas Cage Movie Statistics</h3>';
+            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
+            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
+            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
+            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += '</div>';
+        }
+    }
+
     html += '<div class="table-container">';
     html += '<table>';
     
@@ -572,7 +639,7 @@ function displayNicPicksTable(result, tableName) {
         // Add regular columns
         row.forEach((cell, cellIndex) => {
             const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            // Highlight the pick column to show "Y" values
+            // Highlight the pick column to show values
             if (columns[cellIndex] === 'pick') {
                 html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
             } else {
@@ -585,24 +652,6 @@ function displayNicPicksTable(result, tableName) {
     
     html += '</table>';
     html += '</div>';
-    
-    // Add summary statistics
-    if (values.length > 0) {
-        const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
-        if (averages.length > 0) {
-            const highestRating = Math.max(...averages);
-            const lowestRating = Math.min(...averages);
-            const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
-            
-            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
-            html += '<h3 style="margin-top: 0; color: white;">📊 Nic\'s Pick Statistics</h3>';
-            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
-            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
-            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
-            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
-            html += '</div>';
-        }
-    }
     
     // Add button to return to full table
     html += '<div style="text-align: center; margin-top: 20px;">';
@@ -650,10 +699,10 @@ async function loadPersonPicks(personName, title, subtitle) {
         // Query the table for movies where pick column matches the person
         const results = db.exec(`
             SELECT 
+                id,
                 title,
                 year,
                 rated,
-                pick,
                 date,
                 CASE 
                     WHEN (
@@ -700,7 +749,7 @@ async function loadPersonPicks(personName, title, subtitle) {
             return;
         }
         
-        displayPersonPicksTable(results[0], title, subtitle);
+        displayPersonPicksTable(personName, results[0], title, subtitle);
         
     } catch (error) {
         document.getElementById('results').innerHTML = 
@@ -708,14 +757,15 @@ async function loadPersonPicks(personName, title, subtitle) {
     }
 }
 
-// Fixed displayPersonPicksTable function
-function displayPersonPicksTable(result, title, subtitle) {
+// Fixed displayPersonPicksTable function with stats on left and bar graph on right
+// Fixed displayPersonPicksTable function with smaller stats container
+function displayPersonPicksTable(personName, result, title, subtitle) {
     const { columns, values } = result;
     
     let html = `<h2>${title}</h2>`;
     html += `<p style="color: #ccc; text-align: center; margin-bottom: 20px;">${subtitle} (${values.length} movies) - sorted by average rating</p>`;
     
-    // Add summary statistics FIRST, before the table container
+    // Add summary statistics and bar graph side by side
     if (values.length > 0) {
         const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
         if (averages.length > 0) {
@@ -723,13 +773,93 @@ function displayPersonPicksTable(result, title, subtitle) {
             const lowestRating = Math.min(...averages);
             const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
             
-            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
-            html += `<h3 style="margin-top: 0; color: white;">📊 Pick Statistics</h3>`;
-            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
-            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
-            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
-            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            // Create container for stats and chart side by side
+            html += '<div style="display: flex; margin: 20px 0; gap: 20px; align-items: stretch;">';
+            
+            // Left side - Statistics (MADE SMALLER)
+            html += '<div style="flex: 0 0 200px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
+            html += `<h3 style="margin-top: 0; color: white; font-size: 16px;">📊 ${personName}\'s Stats</h3>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Movies:</strong> ${values.length}</p>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Highest:</strong> ${highestRating}</p>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Lowest:</strong> ${lowestRating}</p>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Average:</strong> ${overallAverage}</p>`;
             html += '</div>';
+            
+            // Right side - Bar Chart (TAKES UP REMAINING SPACE)
+            html += '<div style="flex: 1; background-color: #333; padding: 15px; border-radius: 5px; min-height: 200px;">';
+            html += `<h3 style="margin-top: 0; color: white; text-align: center;">📈 ${personName}\'s Movie Picks (Chronological Order)</h3>`;
+            
+            // Process data for chart - movies in chronological order (by id)
+            const movieData = [];
+            values.forEach((row, index) => {
+                const idIndex = columns.indexOf('id');
+                const titleIndex = columns.indexOf('title');
+                const averageIndex = row.length - 1; // average is last column
+                const id = idIndex !== -1 ? row[idIndex] : index + 1;
+                const title = titleIndex !== -1 ? row[titleIndex] : `Movie ${index + 1}`;
+                const average = row[averageIndex];
+                
+                if (average !== null) {
+                    movieData.push({
+                        id: id,
+                        title: title,
+                        average: parseFloat(average).toFixed(2),
+                        tableRank: index + 1 // Keep track of table ranking
+                    });
+                }
+            });
+
+            // Sort by id for chronological order in chart
+            movieData.sort((a, b) => a.id - b.id);
+
+            // Create bar chart
+            if (movieData.length > 0) {
+                const maxRating = 5; // Fixed max rating of 5
+                const chartHeight = 120;
+                
+                html += '<div style="display: flex; align-items: end; justify-content: center; height: ' + chartHeight + 'px; margin: 20px 0; border-bottom: 2px solid #666; position: relative; overflow-x: auto; padding: 0 10px;">';
+                
+                movieData.forEach((data, index) => {
+                    const barHeight = (parseFloat(data.average) / maxRating) * chartHeight * 0.8;
+                    const barColor = parseFloat(data.average) >= 3.34 ? '#4CAF50' : 
+                                parseFloat(data.average) >= 1.67 ? '#FFC107' : '#F44336';
+                    
+                    html += '<div style="display: flex; flex-direction: column; align-items: center; margin: 0 2px; min-width: 25px;">';
+                    
+                    // Rating label on top of bar
+                    html += `<div style="color: white; font-size: 10px; margin-bottom: 3px; font-weight: bold;">${data.average}</div>`;
+                    
+                    // Bar
+                    html += `<div style="
+                        width: 20px; 
+                        height: ${barHeight}px; 
+                        background-color: ${barColor}; 
+                        border-radius: 2px 2px 0 0;
+                        position: relative;
+                        transition: opacity 0.3s ease;
+                        cursor: pointer;
+                    " title="${data.title} - Rating: ${data.average}/5"></div>`;
+                    
+                    // Rank label
+                    html += `<div style="color: #ccc; font-size: 9px; margin-top: 3px;">#${data.tableRank}</div>`;
+                    
+                    html += '</div>';
+                });
+                
+                html += '</div>';
+                
+                // Legend
+                html += '<div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 11px;">';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #4CAF50; border-radius: 2px;"></div><span style="color: #ccc;">Good (3.35+)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #FFC107; border-radius: 2px;"></div><span style="color: #ccc;">OK (1.68-3.34)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #F44336; border-radius: 2px;"></div><span style="color: #ccc;">Poor (<1.67)</span></div>';
+                html += '</div>';
+            } else {
+                html += '<div style="color: #999; text-align: center; margin: 40px 0;">No date data available for chart</div>';
+            }
+            
+            html += '</div>'; // Close chart container
+            html += '</div>'; // Close flex container
         }
     }
 
@@ -741,7 +871,9 @@ function displayPersonPicksTable(result, title, subtitle) {
     html += '<thead><tr>';
     html += '<th>Rank</th>';
     columns.forEach(col => {
-        html += `<th>${col}</th>`;
+        if (col !== 'id') {
+            html += `<th>${col}</th>`;
+        }
     });
     html += '</tr></thead>';
     
@@ -761,11 +893,13 @@ function displayPersonPicksTable(result, title, subtitle) {
         
         // Add regular columns
         row.forEach((cell, cellIndex) => {
-            const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            if (columns[cellIndex] === 'pick') {
-                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
-            } else {
-                html += `<td>${displayValue}</td>`;
+            if (columns[cellIndex] !== 'id') {
+                const displayValue = cell !== null ? cell : '<em>NULL</em>';
+                if (columns[cellIndex] === 'pick') {
+                    html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+                } else {
+                 html += `<td>${displayValue}</td>`;
+                }
             }
         });
         html += '</tr>';

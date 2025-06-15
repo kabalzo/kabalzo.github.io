@@ -4,6 +4,8 @@ const DEFAULT_TABLE = 'nicmovies';          // Your table name
 
 let db = null;
 let sqlJs = null;
+let currentData = null;
+let currentSortMode = 'year'; // 'year' or 'watched'
 
 async function loadSqlJs() {
     return new Promise((resolve, reject) => {
@@ -115,9 +117,10 @@ async function loadTable() {
     }
     
     try {
-        // Query the table with calculated average - reordered columns and improved NULL handling
+        // Query the table with initial sort by year
+        const orderBy = currentSortMode === 'year' ? 'ORDER BY year DESC' : 'ORDER BY watched DESC';
         const results = db.exec(`
-            SELECT * FROM ${tableName}
+            SELECT * FROM ${tableName} ${orderBy}
         `);
         
         if (results.length === 0) {
@@ -126,6 +129,7 @@ async function loadTable() {
             return;
         }
         
+        currentData = results[0];
         displayTable(results[0], tableName);
         
     } catch (error) {
@@ -134,10 +138,187 @@ async function loadTable() {
     }
 }
 
+function toggleSort() {
+    if (!currentData) return;
+    
+    // Switch sort mode
+    currentSortMode = currentSortMode === 'year' ? 'watched' : 'year';
+    
+    // Re-query with new sort order
+    const tableName = DEFAULT_TABLE;
+    const orderBy = currentSortMode === 'year' ? 'ORDER BY year DESC' : 'ORDER BY watched DESC';
+    
+    try {
+        const results = db.exec(`
+            SELECT * FROM ${tableName} ${orderBy}
+        `);
+        
+        if (results.length > 0) {
+            currentData = results[0];
+            displayTable(results[0], tableName);
+        }
+    } catch (error) {
+        document.getElementById('results').innerHTML = 
+            `<div class="error">Error sorting table: ${error.message}</div>`;
+    }
+}
+
+function pickRandomMovie() {
+    if (!db) {
+        alert('Database not loaded yet. Please wait and try again.');
+        return;
+    }
+    
+    const tableName = DEFAULT_TABLE;
+    
+    try {
+        // Query for movies where watched is 'N'
+        const results = db.exec(`
+            SELECT * FROM ${tableName} WHERE watched = 'N'
+        `);
+        
+        if (results.length === 0 || results[0].values.length === 0) {
+            showMoviePopup({
+                title: 'No Unwatched Movies!',
+                message: 'All Nicolas Cage movies have been watched! Time to rewatch some classics.',
+                isError: true
+            });
+            return;
+        }
+        
+        const { columns, values } = results[0];
+        const randomIndex = Math.floor(Math.random() * values.length);
+        const randomMovie = values[randomIndex];
+        
+        // Create movie object from columns and values
+        const movieData = {};
+        columns.forEach((col, index) => {
+            movieData[col] = randomMovie[index];
+        });
+        
+        showMoviePopup({
+            title: 'Random Movie Pick!',
+            movieData: movieData,
+            columns: columns
+        });
+        
+    } catch (error) {
+        showMoviePopup({
+            title: 'Error',
+            message: `Error picking random movie: ${error.message}`,
+            isError: true
+        });
+    }
+}
+
+function showMoviePopup(data) {
+    // Remove existing popup if any
+    const existingPopup = document.getElementById('movie-popup');
+    if (existingPopup) {
+        existingPopup.remove();
+    }
+    
+    // Create popup HTML
+    let popupContent = '';
+    
+    if (data.isError) {
+        popupContent = `
+            <div class="popup-header error">
+                <h3><i class="fa fa-exclamation-triangle"></i> ${data.title}</h3>
+            </div>
+            <div class="popup-body">
+                <p>${data.message}</p>
+            </div>
+        `;
+    } else {
+        popupContent = `
+            <div class="popup-header">
+                <h3><i class="fa fa-film"></i> ${data.title}</h3>
+            </div>
+            <div class="popup-body">
+                <div class="movie-info">
+        `;
+        
+        // Display movie data
+        data.columns.forEach(col => {
+            const value = data.movieData[col] !== null ? data.movieData[col] : 'N/A';
+            const displayCol = col.charAt(0).toUpperCase() + col.slice(1);
+            popupContent += `
+                <div class="movie-field">
+                    <strong>${displayCol}:</strong> <span>${value}</span>
+                </div>
+            `;
+        });
+        
+        popupContent += `
+                </div>
+                <div class="popup-actions">
+                    <button onclick="pickRandomMovie()" class="btn-secondary">
+                        <i class="fa fa-refresh"></i> Pick Another
+                    </button>
+                </div>
+            </div>
+        `;
+    }
+    
+    // Create popup element
+    const popup = document.createElement('div');
+    popup.id = 'movie-popup';
+    popup.className = 'movie-popup-overlay';
+    popup.innerHTML = `
+        <div class="movie-popup">
+            ${popupContent}
+            <button class="popup-close" onclick="closeMoviePopup()">
+                <i class="fa fa-times"></i>
+            </button>
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(popup);
+    
+    // Add click outside to close
+    popup.addEventListener('click', (e) => {
+        if (e.target === popup) {
+            closeMoviePopup();
+        }
+    });
+    
+    // Add escape key to close
+    document.addEventListener('keydown', handleEscapeKey);
+}
+
+function closeMoviePopup() {
+    const popup = document.getElementById('movie-popup');
+    if (popup) {
+        popup.remove();
+    }
+    document.removeEventListener('keydown', handleEscapeKey);
+}
+
+function handleEscapeKey(e) {
+    if (e.key === 'Escape') {
+        closeMoviePopup();
+    }
+}
+
 function displayTable(result, tableName) {
     const { columns, values } = result;
     
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;
+    
+    // Add control buttons
+    html += '<div class="sort-controls">';
+    html += `<button onclick="toggleSort()" class="sort-toggle-btn">
+                Sort by ${currentSortMode === 'year' ? 'Watched Date' : 'Year'} 
+                <i class="fa fa-sort"></i>
+             </button>`;
+    html += `<button onclick="pickRandomMovie()" class="random-movie-btn">
+                <i class="fa fa-random"></i> Pick Random Movie
+             </button>`;
+    //html += `<span class="sort-indicator">Currently sorted by: <strong>${currentSortMode === 'year' ? 'Release Year' : 'Watched Date'}</strong></span>`;
+    html += '</div>';
+    
     html += '<div class="table-container">';
     html += '<table>';
     

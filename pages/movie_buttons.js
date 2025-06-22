@@ -71,6 +71,18 @@ const BUTTON_CONFIG = [
     }
 ];
 
+// Helper function to calculate median
+function calculateMedian(numbers) {
+    const sorted = numbers.slice().sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    
+    if (sorted.length % 2 === 0) {
+        return ((sorted[middle - 1] + sorted[middle]) / 2).toFixed(2);
+    } else {
+        return sorted[middle].toFixed(2);
+    }
+}
+
 // Function to create and add all buttons
 function createMovieButtons() {
     // Remove any existing button containers
@@ -286,6 +298,7 @@ function displayTopMoviesTable(result, tableName) {
             const highestRating = Math.max(...averages);
             const lowestRating = Math.min(...averages);
             const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            const medianRating = calculateMedian(averages);
             
             html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
             html += '<h3 style="margin-top: 0; color: white;">📊 Top 25 Movie Statistics</h3>';
@@ -293,6 +306,7 @@ function displayTopMoviesTable(result, tableName) {
             html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
             html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
             html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += `<p><strong>Median Rating:</strong> ${medianRating}</p>`;
             html += '</div>';
         }
     }
@@ -448,6 +462,7 @@ function displayBottomMoviesTable(result, tableName) {
             const highestRating = Math.max(...averages);
             const lowestRating = Math.min(...averages);
             const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            const medianRating = calculateMedian(averages);
             
             html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
             html += '<h3 style="margin-top: 0; color: white;">📊 Bottom 25 Movie Statistics</h3>';
@@ -455,6 +470,7 @@ function displayBottomMoviesTable(result, tableName) {
             html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
             html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
             html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += `<p><strong>Median Rating:</strong> ${medianRating}</p>`;
             html += '</div>';
         }
     }
@@ -600,6 +616,7 @@ function displayNicPicksTable(result, tableName) {
             const highestRating = Math.max(...averages);
             const lowestRating = Math.min(...averages);
             const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            const medianRating = calculateMedian(averages);
             
             html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
             html += '<h3 style="margin-top: 0; color: white;">📊 Nicolas Cage Movie Statistics</h3>';
@@ -607,6 +624,7 @@ function displayNicPicksTable(result, tableName) {
             html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
             html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
             html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += `<p><strong>Median Rating:</strong> ${medianRating}</p>`;
             html += '</div>';
         }
     }
@@ -772,6 +790,7 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
             const highestRating = Math.max(...averages);
             const lowestRating = Math.min(...averages);
             const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            const medianRating = calculateMedian(averages);
             
             // Create container for stats and chart side by side
             html += '<div style="display: flex; margin: 20px 0; gap: 20px; align-items: stretch;">';
@@ -783,6 +802,7 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Highest:</strong> ${highestRating}</p>`;
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Lowest:</strong> ${lowestRating}</p>`;
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Average:</strong> ${overallAverage}</p>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Median:</strong> ${medianRating}</p>`;
             html += '</div>';
             
             // Right side - Bar Chart (TAKES UP REMAINING SPACE)

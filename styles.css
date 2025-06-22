@@ -1,5 +1,7 @@
 body {
 	background-color: black;
+	margin: 0;
+	padding: 0;
 }
 
 .top {
@@ -7,7 +9,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px; /* Adjust height as needed */
+    height: 200px;
 }
 .top img {
     max-width: 100%;
@@ -55,41 +57,23 @@ h2 {
 	background-position: center;
 }
 
-h3 {
-	color: green;
-	font-weight: bold;
-}
-
-h5 {
-	color: white;
-	position: relative; left: 25px;
-	background-color: blue;
-	width: 120px;
-	text-align: center;
-}
-
-li {
-	color: goldenrod;
-	font-size: large;
-	font-weight: bold;
-	font-family: 'Courier New', Courier, monospace;
-}
-
 .container {
-	/* Setup Flexbox */
-	display: -webkit-box;
-	display: -moz-box;
-	display: -ms-flexbox;
-	display: -webkit-flex;
 	display: flex;
-	/* Reverse Column Order */
-	-webkit-flex-flow: column-reverse;
-	flex-flow: column-reverse;
+	flex-direction: column-reverse;
+	padding: 20px;
+	gap: 30px; /* Add consistent spacing between movies */
+	max-width: 1400px;
+	margin: 0 auto; /* Center the container */
 }
 
 .movie {
-	height: 320px;
-	padding: auto;
+	display: flex;
+	flex-wrap: wrap;
+	gap: 20px;
+	padding: 20px;
+	background-color: rgba(26, 26, 26, 0.3);
+	border-radius: 15px;
+	min-height: 300px;
 	position: relative;
 }
 
@@ -108,61 +92,240 @@ li {
 	position: relative;
 }
 
-.rating {
-	width: 200px;
+/* Enhanced rating-box styling */
+.rating-box {
+	flex: 0 0 200px;
 	height: 275px;
-	background-color: #1a1a1a;
-	padding: auto;
+	background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+	padding: 12px;
 	border: 3px solid goldenrod;
     border-radius: 10px;
+	box-sizing: border-box;
+	position: relative;
+	box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.movie-title {
+	color: #4CAF50;
+	font-weight: bold;
+	margin: 0 0 8px 0;
+	text-align: center;
+	font-size: 16px;
+	text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+	border-bottom: 2px solid goldenrod;
+	padding-bottom: 6px;
+	flex-shrink: 0;
+}
+
+.member-ratings {
+	color: #CC6633;
+	font-size: 12px;
+	font-weight: bold;
+	font-family: 'Courier New', Courier, monospace;
+	margin: 0;
+	flex-grow: 1;
+	overflow: hidden;
+}
+
+.member-ratings ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 8px 0 0 0;
+}
+
+.member-ratings ul li {
+	margin: 3px 0;
+	padding: 3px 6px;
+	background-color: rgba(204, 102, 51, 0.1);
+	border-radius: 3px;
+	border-left: 2px solid #CC6633;
+	transition: background-color 0.2s ease;
+	font-size: 11px;
+}
+
+.member-ratings ul li:hover {
+	background-color: rgba(204, 102, 51, 0.2);
+}
+
+.watch-date {
+	color: black;
+	margin: 8px auto 0 auto;
+	font-weight: bold;
+	background: linear-gradient(135deg, #F5E6D3 0%, #E6D7C0 100%);
+	width: 120px;
+	text-align: center;
+	padding: 6px;
+	border: 2px solid goldenrod;
+    border-radius: 6px;
+	box-sizing: border-box;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+	font-size: 11px;
+	flex-shrink: 0;
+}
+
+.watch-date h5 {
+	margin: 0;
+	font-size: 11px;
 }
 
 .rt, .rt2 {
-	width: 200px;
+	flex: 0 0 200px;
     height: 275px;
 	background-color: #1a1a1a;
-    display: block;
-    position: absolute;
     overflow: hidden;
-	left: 300px;
-	top: 0;
 	border: 3px solid goldenrod;
     border-radius: 10px;
+	position: relative;
 }
 
 .synopsis {
-	color: white;
-	font-size: small;
-	width: 300px;
+	color: #e0e0e0; /* Softer white for better readability */
+	font-size: 14px; /* Slightly larger font */
+	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Better font family */
+	line-height: 1.6; /* Improved line spacing */
+	flex: 1;
+	min-width: 250px;
     height: 275px;
-	background-color: #1a1a1a;
-    display: block;
-    position: absolute;
-    overflow: hidden;
-	top: 0px;
-	text-align: center;
-	left: 650px;
+	background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%); /* Subtle gradient */
+    overflow-y: auto; /* Allow scrolling if text is too long */
+	text-align: left;
+	padding: 20px; /* More padding */
 	border: 3px solid goldenrod;
     border-radius: 10px;
+	box-sizing: border-box;
+	position: relative;
 }
 
-.rt2 {
-	left: 900px;
+/* Add a subtle inner shadow for depth */
+.synopsis::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	border-radius: 7px;
+	box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.3);
+	pointer-events: none;
+}
+
+/* Style the paragraph inside synopsis */
+.synopsis p {
+	margin: 0;
+	text-indent: 0;
+	font-weight: 400;
+	text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Subtle text shadow for readability */
+}
+
+/* Add a subtle scrollbar styling */
+.synopsis::-webkit-scrollbar {
+	width: 8px;
+}
+
+.synopsis::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.1);
+	border-radius: 4px;
+}
+
+.synopsis::-webkit-scrollbar-thumb {
+	background: rgba(218, 165, 32, 0.6);
+	border-radius: 4px;
+}
+
+.synopsis::-webkit-scrollbar-thumb:hover {
+	background: rgba(218, 165, 32, 0.8);
+}
+
+/* Enhanced hover effect specifically for synopsis */
+.synopsis:hover {
+	transform: scale(1.02); /* Slightly less dramatic scale */
+	transition: all 0.3s ease;
+	box-shadow: 0 8px 20px rgba(218, 165, 32, 0.2);
+	border-color: #FFD700;
+	background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); /* Lighter on hover */
+}
+
+.synopsis:hover p {
+	color: #f0f0f0; /* Brighter text on hover */
+}
+
+/* Enhanced IMDB styling */
+.imdb {
+	color: white;
+	font-size: small;
+	flex: 0 0 200px;
+    height: 275px;
+	background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    overflow: hidden;
+	text-align: center;
+	padding: 15px;
+	border: 3px solid goldenrod;
+    border-radius: 10px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+.imdb::before {
+	content: "IMDb";
+	position: absolute;
+	top: 10px;
+	left: 50%;
+	transform: translateX(-50%);
+	color: #f5c518;
+	font-weight: bold;
+	font-size: 16px;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.imdb-score {
+	color: #f5c518;
+	font-size: 36px;
+	font-weight: bold;
+	font-family: 'Courier New', Courier, monospace;
+	margin: 20px 0 10px 0;
+	text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+}
+
+.imdb-votes {
+	color: #cccccc;
+	font-size: 12px;
+	font-family: 'Courier New', Courier, monospace;
+	opacity: 0.8;
+}
+
+.imdb-loading {
+	color: #f5c518;
+	font-style: italic;
+	font-size: 14px;
 }
 
 .rt img, .rt2 img {
-	position: relative;
+	position: absolute;
     top: 0;
     left: 0;
     width: 100%;
+	height: 100%;
+	object-fit: cover;
 }
 
-.rt:hover, .rt2:hover, .synopsis:hover {
-	transform: scale(1.25);
+/* Enhanced hover effects */
+.rating-box:hover, .rt:hover, .rt2:hover, .imdb:hover, .movieboys-rating:hover {
+	transform: scale(1.05);
+	transition: all 0.3s ease;
+	box-shadow: 0 8px 16px rgba(218, 165, 32, 0.3);
+	border-color: #FFD700;
 }
 
 .menu {
-	height: 100px;
+	height: auto;
+	min-height: 100px;
 }
 
 .menu ul {
@@ -171,10 +334,11 @@ li {
 	padding: 0;
 	overflow: hidden;
 	background-color: #333;
+	display: flex;
+	flex-wrap: wrap;
 }
 
 .menu li {
-	float: left;
 	font-size: 25px;
 	font-weight: bold;
 }
@@ -182,7 +346,7 @@ li {
 .menu li a {
 	display: block;
 	color: #CC6633;
-	text-align: left;
+	text-align: center;
 	padding: 28px 32px;
 	text-decoration: none;
 }
@@ -197,26 +361,23 @@ li {
 
 footer {
 	text-align: center;
-	padding: 3px;
+	padding: 20px;
 	background-color: slategray;
 	color: wheat;
-	bottom: 200px;
+	margin-top: 50px;
 }
 
 /* Movie Boys Rating Styles */
 .movieboys-rating {
-    width: 150px;
+	flex: 0 0 150px;
     height: 275px;
-    display: block;
-    position: absolute;
-    left: 1200px;
-    top: 0;
     background-color: #1a1a1a;
     border: 3px solid goldenrod;
     border-radius: 10px;
     padding: 15px;
     box-sizing: border-box;
     text-align: center;
+    order: 99; /* This pushes it to the right in flexbox */
 }
 
 .movieboys-rating h4 {
@@ -235,18 +396,77 @@ footer {
     margin-top: 50px;
 }
 
+/* Add a subtle pulse animation for loading states */
+.imdb-loading {
+	animation: pulse 2s infinite;
+}
 
+@keyframes pulse {
+	0% { opacity: 0.6; }
+	50% { opacity: 1; }
+	100% { opacity: 0.6; }
+}
 
+/* Responsive Design */
+@media screen and (max-width: 1200px) {
+	.movie {
+		flex-direction: column;
+		align-items: center;
+	}
+	
+	.rating-box, .rt, .rt2, .imdb, .movieboys-rating {
+		flex: none;
+		width: 100%;
+		max-width: 400px;
+		margin-bottom: 20px;
+	}
+	
+	.synopsis {
+		flex: none;
+		width: 100%;
+		max-width: 400px;
+		margin-bottom: 20px;
+	}
+}
 
+@media screen and (max-width: 768px) {
+	.container {
+		padding: 10px;
+	}
+	
+	.movie {
+		padding: 15px;
+	}
+	
+	.menu li {
+		font-size: 18px;
+	}
+	
+	.menu li a {
+		padding: 20px 24px;
+	}
+	
+	.rating-box, .rt, .rt2, .synopsis, .imdb, .movieboys-rating {
+		height: auto;
+		min-height: 200px;
+	}
+}
 
-
-
-
-
-
-
-
-
-
-
-
+@media screen and (max-width: 480px) {
+	.top {
+		height: 120px;
+	}
+	
+	.menu li {
+		font-size: 16px;
+		width: 100%;
+	}
+	
+	.menu li a {
+		padding: 15px;
+	}
+	
+	.movie {
+		padding: 10px;
+	}
+}

@@ -8,8 +8,12 @@ function extractRating(ratingText) {
 
 // Function to calculate average rating from <li> elements
 function calculateMovieRating(movieElement) {
-    const ratingsList = movieElement.querySelector('.rating ul');
-    if (!ratingsList) return null;
+    // Updated selector to match the new HTML structure
+    const ratingsList = movieElement.querySelector('.member-ratings ul');
+    if (!ratingsList) {
+        console.log('No member-ratings ul found for movie:', movieElement.id);
+        return null;
+    }
     
     const listItems = ratingsList.querySelectorAll('li');
     let validRatings = [];
@@ -22,7 +26,10 @@ function calculateMovieRating(movieElement) {
         }
     });
     
-    if (validRatings.length === 0) return null;
+    if (validRatings.length === 0) {
+        console.log('No valid ratings found for movie:', movieElement.id);
+        return null;
+    }
     
     const sum = validRatings.reduce((acc, rating) => acc + rating, 0);
     return (sum / validRatings.length).toFixed(2);
@@ -49,16 +56,23 @@ function addMovieBoysRating(movieElement) {
     const averageRating = calculateMovieRating(movieElement);
     
     if (averageRating !== null) {
-        scoreDiv.textContent = `${averageRating}`;
+        scoreDiv.textContent = `${averageRating}/5`;
     } else {
         scoreDiv.textContent = 'No ratings';
+        scoreDiv.style.fontSize = '16px'; // Make "No ratings" text smaller
     }
     
     ratingDiv.appendChild(heading);
     ratingDiv.appendChild(scoreDiv);
     
-    // Append to the movie element (will be positioned with CSS)
-    movieElement.appendChild(ratingDiv);
+    // Insert the rating element after the rating-box (first child)
+    const ratingBox = movieElement.querySelector('.rating-box');
+    if (ratingBox && ratingBox.nextSibling) {
+        movieElement.insertBefore(ratingDiv, ratingBox.nextSibling);
+    } else {
+        // Fallback: append to the movie element
+        movieElement.appendChild(ratingDiv);
+    }
 }
 
 // Function to update an existing Movie Boys Rating element
@@ -70,8 +84,10 @@ function updateMovieBoysRating(movieElement) {
     
     if (averageRating !== null) {
         ratingElement.textContent = `${averageRating}/5`;
+        ratingElement.style.fontSize = '48px'; // Reset to normal size
     } else {
         ratingElement.textContent = 'No ratings';
+        ratingElement.style.fontSize = '16px'; // Make "No ratings" text smaller
     }
 }
 
@@ -86,7 +102,7 @@ function initMovieBoysRating(movieElementOrId) {
     }
     
     if (!movieElement) {
-        console.error('Movie element not found');
+        console.error('Movie element not found:', movieElementOrId);
         return;
     }
     
@@ -96,6 +112,9 @@ function initMovieBoysRating(movieElementOrId) {
 // Function to initialize all movies at once (optional convenience function)
 function initAllMovieBoysRatings() {
     document.querySelectorAll('.movie').forEach(movieElement => {
-        addMovieBoysRating(movieElement);
+        // Skip empty movie elements (like the one with id="0")
+        if (movieElement.querySelector('.member-ratings')) {
+            addMovieBoysRating(movieElement);
+        }
     });
 }

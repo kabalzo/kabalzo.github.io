@@ -821,9 +821,9 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
                 
                 movieData.forEach((data, index) => {
                     const barHeight = (parseFloat(data.average) / maxRating) * chartHeight * 0.8;
-                    const barColor = parseFloat(data.average) >= 3.75 ? '#9400d3' :
-                                parseFloat(data.average) >= 2.50 ? '#4CAF50' :
-                                parseFloat(data.average) >= 1.25 ? '#FFC107' : '#F44336';
+                    const barColor = parseFloat(data.average) >= 4.00 ? '#9400d3' :
+                                parseFloat(data.average) >= 3.00 ? '#4CAF50' :
+                                parseFloat(data.average) >= 2.00 ? '#FFC107' : '#F44336';
                     
                     html += '<div style="display: flex; flex-direction: column; align-items: center; margin: 0 2px; min-width: 25px;">';
                     
@@ -851,10 +851,10 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
                 
                 // Legend
                 html += '<div style="display: flex; justify-content: center; gap: 15px; margin-top: 10px; font-size: 11px;">';
-                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #9400d3; border-radius: 2px;"></div><span style="color: #ccc;">Godlike (3.75+)</span></div>';
-                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #4CAF50; border-radius: 2px;"></div><span style="color: #ccc;">Good (2.50-3.74)</span></div>';
-                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #FFC107; border-radius: 2px;"></div><span style="color: #ccc;">OK (1.25-2.49)</span></div>';
-                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #F44336; border-radius: 2px;"></div><span style="color: #ccc;">Bad (<1.25)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #9400d3; border-radius: 2px;"></div><span style="color: #ccc;">Godlike (4.00+)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #4CAF50; border-radius: 2px;"></div><span style="color: #ccc;">Good (3.00-3.99)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #FFC107; border-radius: 2px;"></div><span style="color: #ccc;">OK (2.00-2.99)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #F44336; border-radius: 2px;"></div><span style="color: #ccc;">Bad (<1.99)</span></div>';
                 html += '</div>';
             } else {
                 html += '<div style="color: #999; text-align: center; margin: 40px 0;">No date data available for chart</div>';

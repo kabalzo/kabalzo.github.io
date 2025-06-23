@@ -6,14 +6,41 @@ body {
 
 .top {
 	background-color: #FCECCB;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 200px;
+	padding: 0 2%; /* slight edge padding */
+}
+
+.top > div {
+	flex-basis: 12.5%; /* 1/8 of 100% */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.logo {
+    flex-grow: 0;
+    flex-shrink: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 200px;
+    padding: 0 2rem; /* optional spacing around the logo */
 }
-.top img {
-    max-width: 100%;
-    max-height: 100%;
+
+.logo img {
+    height: auto;
+    max-height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+
+.nic1 img,
+.nic2 img {
+	height: 150px;
+	max-width: 100%;
 }
 
 .h1 {

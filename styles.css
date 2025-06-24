@@ -209,9 +209,13 @@ h2 {
 }
 
 .synopsis {
-	color: #e0e0e0; /* Softer white for better readability */
-	font-size: 14px; /* Slightly larger font */
-	font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Better font family */
+	display: flex;
+    align-items: center;
+    justify-content: center;
+	color: #CC6633;
+	font-size: 16px; /* Slightly larger font */
+	font-weight: bolder;
+	font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 	line-height: 1.6; /* Improved line spacing */
 	flex: 1;
 	min-width: 250px;
@@ -241,6 +245,8 @@ h2 {
 
 /* Style the paragraph inside synopsis */
 .synopsis p {
+	margin: 0;
+    text-align: center;
 	margin: 0;
 	text-indent: 0;
 	font-weight: 400;
@@ -272,11 +278,6 @@ h2 {
 	transition: all 0.3s ease;
 	box-shadow: 0 8px 20px rgba(218, 165, 32, 0.2);
 	border-color: #FFD700;
-	background: linear-gradient(135deg, #2d2d2d 0%, #3a3a3a 100%); /* Lighter on hover */
-}
-
-.synopsis:hover p {
-	color: #f0f0f0; /* Brighter text on hover */
 }
 
 /* Enhanced IMDB styling */

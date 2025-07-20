@@ -187,6 +187,27 @@ function displayTable(result, tableName) {
     const { columns, values } = result;
     
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;
+
+    // Add summary statistics
+    if (values.length > 0) {
+        const averages = values.map(row => row[row.length - 1]).filter(avg => avg !== null);
+        if (averages.length > 0) {
+            const highestRating = Math.max(...averages);
+            const lowestRating = Math.min(...averages);
+            const overallAverage = (averages.reduce((sum, avg) => sum + avg, 0) / averages.length).toFixed(2);
+            const medianRating = calculateMedian(averages);
+            
+            html += '<div style="text-align: center; margin: 20px; color: #ccc; background-color: #333; padding: 15px; border-radius: 5px;">';
+            html += '<h3 style="margin-top: 0; color: white;">📊 All Movie Statistics</h3>';
+            html += `<p><strong>Total Movies:</strong> ${values.length}</p>`;
+            html += `<p><strong>Highest Rating:</strong> ${highestRating}</p>`;
+            html += `<p><strong>Lowest Rating:</strong> ${lowestRating}</p>`;
+            html += `<p><strong>Average Rating:</strong> ${overallAverage}</p>`;
+            html += `<p><strong>Median Rating:</strong> ${medianRating}</p>`;
+            html += '</div>';
+        }
+    }
+
     html += '<div class="table-container">';
     html += '<table>';
     

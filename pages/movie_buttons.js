@@ -83,6 +83,66 @@ function calculateMedian(numbers) {
     }
 }
 
+// Function to generate the corrected average calculation SQL
+// Function to generate the corrected average calculation SQL
+function getAverageSQL(tableName, whereClause = '', orderBy = 'average DESC', limit = '') {
+    return `
+        SELECT 
+            id,
+            title,
+            year,
+            rated,
+            pick,
+            date,
+            tyler,
+            alexb,
+            trevor,
+            jordan,
+            drew,
+            alexd,
+            colin,
+            other,
+            CASE 
+                WHEN (
+                    (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN 1 ELSE 0 END) +
+                    (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN 1 ELSE 0 END)
+                ) > 0 
+                THEN ROUND(
+                    (
+                        (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN CAST(tyler AS REAL) ELSE 0 END) +
+                        (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN CAST(alexb AS REAL) ELSE 0 END) +
+                        (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN CAST(trevor AS REAL) ELSE 0 END) +
+                        (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN CAST(jordan AS REAL) ELSE 0 END) +
+                        (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN CAST(drew AS REAL) ELSE 0 END) +
+                        (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN CAST(alexd AS REAL) ELSE 0 END) +
+                        (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN CAST(colin AS REAL) ELSE 0 END) +
+                        (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN CAST(other AS REAL) ELSE 0 END)
+                    ) / (
+                        (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN 1 ELSE 0 END)
+                    ), 2
+                )
+                ELSE NULL
+            END as average
+        FROM ${tableName}
+        ${whereClause ? 'WHERE ' + whereClause : ''}
+        ORDER BY ${orderBy}
+        ${limit ? 'LIMIT ' + limit : ''}
+    `;
+}
+
 // Function to create and add all buttons
 function createMovieButtons() {
     // Remove any existing button containers
@@ -215,61 +275,7 @@ async function loadTopMovies() {
     
     try {
         // Query the table for top 25 movies sorted by average (high to low)
-        const results = db.exec(`
-            SELECT 
-                title,
-                year,
-                rated,
-                pick,
-                date,
-                CASE 
-                    WHEN (
-                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                    ) > 0 
-                    THEN ROUND(
-                        (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
-                        ) * 1.0 / (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                        ), 2
-                    )
-                    ELSE NULL
-                END as average
-            FROM ${tableName}
-            WHERE (
-                (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-            ) > 0
-            ORDER BY average DESC
-            LIMIT 25
-        `);
+        const results = db.exec(getAverageSQL(tableName, '', 'average DESC', '25'));
         
         if (results.length === 0) {
             document.getElementById('results').innerHTML = 
@@ -318,7 +324,9 @@ function displayTopMoviesTable(result, tableName) {
     html += '<thead><tr>';
     html += '<th>Rank</th>'; // Add rank column
     columns.forEach(col => {
-        html += `<th>${col}</th>`;
+        if (col !== 'id') { // Hide ID column
+            html += `<th>${col}</th>`;
+        }
     });
     html += '</tr></thead>';
     
@@ -338,12 +346,14 @@ function displayTopMoviesTable(result, tableName) {
         
         // Add regular columns
         row.forEach((cell, cellIndex) => {
-            const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            // Highlight the pick column to show values
-            if (columns[cellIndex] === 'pick') {
-                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
-            } else {
-                html += `<td>${displayValue}</td>`;
+            if (columns[cellIndex] !== 'id') { // Hide ID column
+                const displayValue = cell !== null ? cell : '<em>NULL</em>';
+                // Highlight the pick column to show values
+                if (columns[cellIndex] === 'pick') {
+                    html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+                } else {
+                    html += `<td>${displayValue}</td>`;
+                }
             }
         });
         html += '</tr>';
@@ -379,61 +389,7 @@ async function loadBottomMovies() {
     
     try {
         // Query the table for bottom 25 movies sorted by average (low to high)
-        const results = db.exec(`
-            SELECT 
-                title,
-                year,
-                rated,
-                pick,
-                date,
-                CASE 
-                    WHEN (
-                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                    ) > 0 
-                    THEN ROUND(
-                        (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
-                        ) * 1.0 / (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                        ), 2
-                    )
-                    ELSE NULL
-                END as average
-            FROM ${tableName}
-            WHERE (
-                (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-            ) > 0
-            ORDER BY average ASC
-            LIMIT 25
-        `);
+        const results = db.exec(getAverageSQL(tableName, '', 'average ASC', '25'));
         
         if (results.length === 0) {
             document.getElementById('results').innerHTML = 
@@ -482,7 +438,9 @@ function displayBottomMoviesTable(result, tableName) {
     html += '<thead><tr>';
     html += '<th>Rank</th>'; // Add rank column
     columns.forEach(col => {
-        html += `<th>${col}</th>`;
+        if (col !== 'id') { // Hide ID column
+            html += `<th>${col}</th>`;
+        }
     });
     html += '</tr></thead>';
     
@@ -502,12 +460,14 @@ function displayBottomMoviesTable(result, tableName) {
         
         // Add regular columns
         row.forEach((cell, cellIndex) => {
-            const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            // Highlight the pick column to show values
-            if (columns[cellIndex] === 'pick') {
-                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
-            } else {
-                html += `<td>${displayValue}</td>`;
+            if (columns[cellIndex] !== 'id') { // Hide ID column
+                const displayValue = cell !== null ? cell : '<em>NULL</em>';
+                // Highlight the pick column to show values
+                if (columns[cellIndex] === 'pick') {
+                    html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+                } else {
+                    html += `<td>${displayValue}</td>`;
+                }
             }
         });
         html += '</tr>';
@@ -543,51 +503,7 @@ async function loadNicPicks() {
     
     try {
         // Query the table for movies where "nic" column is "Y", sorted by average (high to low)
-        const results = db.exec(`
-            SELECT 
-                title,
-                year,
-                rated,
-                pick,
-                date,
-                CASE 
-                    WHEN (
-                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                    ) > 0 
-                    THEN ROUND(
-                        (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
-                        ) * 1.0 / (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                        ), 2
-                    )
-                    ELSE NULL
-                END as average
-            FROM ${tableName}
-            WHERE UPPER(nic) = 'Y'
-            ORDER BY average DESC
-        `);
+        const results = db.exec(getAverageSQL(tableName, "UPPER(nic) = 'Y'", 'average DESC', ''));
         
         if (results.length === 0) {
             document.getElementById('results').innerHTML = 
@@ -636,7 +552,9 @@ function displayNicPicksTable(result, tableName) {
     html += '<thead><tr>';
     html += '<th>Rank</th>'; // Add rank column
     columns.forEach(col => {
-        html += `<th>${col}</th>`;
+        if (col !== 'id') { // Hide ID column
+            html += `<th>${col}</th>`;
+        }
     });
     html += '</tr></thead>';
     
@@ -656,12 +574,14 @@ function displayNicPicksTable(result, tableName) {
         
         // Add regular columns
         row.forEach((cell, cellIndex) => {
-            const displayValue = cell !== null ? cell : '<em>NULL</em>';
-            // Highlight the pick column to show values
-            if (columns[cellIndex] === 'pick') {
-                html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
-            } else {
-                html += `<td>${displayValue}</td>`;
+            if (columns[cellIndex] !== 'id') { // Hide ID column
+                const displayValue = cell !== null ? cell : '<em>NULL</em>';
+                // Highlight the pick column to show values
+                if (columns[cellIndex] === 'pick') {
+                    html += `<td style="background-color: #2d4a2d; color: #90ee90; font-weight: bold;">${displayValue}</td>`;
+                } else {
+                    html += `<td>${displayValue}</td>`;
+                }
             }
         });
         html += '</tr>';
@@ -715,51 +635,7 @@ async function loadPersonPicks(personName, title, subtitle) {
     
     try {
         // Query the table for movies where pick column matches the person
-        const results = db.exec(`
-            SELECT 
-                id,
-                title,
-                year,
-                rated,
-                date,
-                CASE 
-                    WHEN (
-                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                    ) > 0 
-                    THEN ROUND(
-                        (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
-                        ) * 1.0 / (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
-                        ), 2
-                    )
-                    ELSE NULL
-                END as average
-            FROM ${tableName}
-            WHERE pick = '${personName}'
-            ORDER BY average DESC
-        `);
+        const results = db.exec(getAverageSQL(tableName, `pick = '${personName}'`, 'average DESC', ''));
         
         if (results.length === 0) {
             document.getElementById('results').innerHTML = 
@@ -840,7 +716,8 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
                 html += '<div style="display: flex; align-items: end; justify-content: center; height: ' + chartHeight + 'px; margin: 20px 0; border-bottom: 2px solid #666; position: relative; overflow-x: auto; padding: 0 10px;">';
                 
                 movieData.forEach((data, index) => {
-                    const barHeight = (parseFloat(data.average) / maxRating) * chartHeight * 0.8;
+                    // Minimum bar height of 1px
+                    const barHeight = Math.max(1, (parseFloat(data.average) / maxRating) * chartHeight * 0.8);
                     const barColor = parseFloat(data.average) >= 4.00 ? '#9400d3' :
                                 parseFloat(data.average) >= 3.00 ? '#4CAF50' :
                                 parseFloat(data.average) >= 2.00 ? '#FFC107' : '#F44336';

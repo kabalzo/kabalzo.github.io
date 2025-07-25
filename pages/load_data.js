@@ -102,6 +102,18 @@ async function loadDatabase(dbPath) {
     }
 }
 
+// Helper function to calculate median
+function calculateMedian(numbers) {
+    const sorted = numbers.slice().sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+    
+    if (sorted.length % 2 === 0) {
+        return ((sorted[middle - 1] + sorted[middle]) / 2).toFixed(2);
+    } else {
+        return sorted[middle].toFixed(2);
+    }
+}
+
 async function loadTable() {
     const dbPath = DEFAULT_DB_PATH;
     const tableName = DEFAULT_TABLE;
@@ -116,6 +128,7 @@ async function loadTable() {
     
     try {
         // Query the table with calculated average - reordered columns and improved NULL handling
+        // Replace this entire db.exec() call:
         const results = db.exec(`
             SELECT 
                 id,
@@ -134,34 +147,34 @@ async function loadTable() {
                 other,
                 CASE 
                     WHEN (
-                        (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                        (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
+                        (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN 1 ELSE 0 END) +
+                        (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN 1 ELSE 0 END)
                     ) > 0 
                     THEN ROUND(
                         (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN tyler ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN alexb ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN trevor ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN jordan ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN drew ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN alexd ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN colin ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN other ELSE 0 END)
-                        ) * 1.0 / (
-                            (CASE WHEN tyler IS NOT NULL AND tyler != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexb IS NOT NULL AND alexb != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN trevor IS NOT NULL AND trevor != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN jordan IS NOT NULL AND jordan != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN drew IS NOT NULL AND drew != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN alexd IS NOT NULL AND alexd != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN colin IS NOT NULL AND colin != '' THEN 1 ELSE 0 END) +
-                            (CASE WHEN other IS NOT NULL AND other != '' THEN 1 ELSE 0 END)
+                            (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN CAST(tyler AS REAL) ELSE 0 END) +
+                            (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN CAST(alexb AS REAL) ELSE 0 END) +
+                            (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN CAST(trevor AS REAL) ELSE 0 END) +
+                            (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN CAST(jordan AS REAL) ELSE 0 END) +
+                            (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN CAST(drew AS REAL) ELSE 0 END) +
+                            (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN CAST(alexd AS REAL) ELSE 0 END) +
+                            (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN CAST(colin AS REAL) ELSE 0 END) +
+                            (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN CAST(other AS REAL) ELSE 0 END)
+                        ) / (
+                            (CASE WHEN tyler IS NOT NULL AND TRIM(tyler) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN alexb IS NOT NULL AND TRIM(alexb) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN trevor IS NOT NULL AND TRIM(trevor) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN jordan IS NOT NULL AND TRIM(jordan) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN drew IS NOT NULL AND TRIM(drew) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN alexd IS NOT NULL AND TRIM(alexd) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN colin IS NOT NULL AND TRIM(colin) != '' THEN 1 ELSE 0 END) +
+                            (CASE WHEN other IS NOT NULL AND TRIM(other) != '' THEN 1 ELSE 0 END)
                         ), 2
                     )
                     ELSE NULL

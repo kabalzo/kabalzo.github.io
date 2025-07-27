@@ -68,6 +68,14 @@ const BUTTON_CONFIG = [
         color: '#2d4a2d',
         hoverColor: '#3d5a3d',
         onClick: 'loadAlexBPicks'
+    },
+    {
+        row: 2,
+        id: 'colinPicksBtn',
+        text: '🎬 Colin\'s Picks',
+        color: '#2d4a2d',
+        hoverColor: '#3d5a3d',
+        onClick: 'loadColinPicks'
     }
 ];
 
@@ -621,11 +629,15 @@ async function loadAlexBPicks() {
     await loadPersonPicks('Alex', 'AlexB\'s Movie Picks', 'AlexBolas Cage movies');
 }
 
+async function loadColinPicks() {
+    await loadPersonPicks('Colin', 'Colin\'s Movie Picks', 'ColinBolas Cage movies');
+}
+
 // Generic function to load picks for any person
 async function loadPersonPicks(personName, title, subtitle) {
     const tableName = DEFAULT_TABLE;
     
-    document.getElementById('results').innerHTML = `<p>Loading ${personName} Cage Movies...</p>`;
+    document.getElementById('results').innerHTML = `<p>Loading ${personName} movies...</p>`;
     
     // Load database if not already loaded
     if (!db) {

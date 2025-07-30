@@ -1,0 +1,19 @@
+# netlify.toml - Netlify configuration file
+# Place this in your repo root
+
+[build]
+  # Build command to inject environment variables
+  command = "node inject-env.js"
+  
+  # Directory to publish (current directory)
+  publish = "."
+
+[build.environment]
+  # Ensure Node.js is available during build
+  NODE_VERSION = "18"
+
+[[redirects]]
+  # Handle client-side routing (if needed)
+  from = "/*"
+  to = "/index.html"
+  status = 200

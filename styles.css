@@ -280,7 +280,7 @@ h2 {
 	border-color: #FFD700;
 }
 
-/* Enhanced IMDB styling */
+/* Enhanced IMDB/Ratings styling */
 .imdb {
 	color: white;
 	font-size: small;
@@ -300,38 +300,125 @@ h2 {
 	position: relative;
 }
 
-.imdb::before {
-	content: "IMDb";
-	position: absolute;
-	top: 10px;
-	left: 50%;
-	transform: translateX(-50%);
-	color: #f5c518;
-	font-weight: bold;
-	font-size: 16px;
-	font-family: 'Courier New', Courier, monospace;
+.ratings-container {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	width: 100%;
+	height: 100%;
+	justify-content: center;
+	align-items: center;
 }
 
-.imdb-score {
-	color: #f5c518;
-	font-size: 36px;
-	font-weight: bold;
-	font-family: 'Courier New', Courier, monospace;
-	margin: 20px 0 10px 0;
-	text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+.rating-item {
+	background: rgba(255, 255, 255, 0.05);
+	border-radius: 8px;
+	padding: 8px 12px;
+	width: 100%;
+	max-width: 160px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	transition: all 0.3s ease;
 }
 
-.imdb-votes {
-	color: #cccccc;
-	font-size: 12px;
-	font-family: 'Courier New', Courier, monospace;
+.rating-item:hover {
+	background: rgba(255, 255, 255, 0.1);
+	transform: translateY(-2px);
+}
+
+.rating-source {
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+	margin-bottom: 4px;
 	opacity: 0.8;
 }
 
-.imdb-loading {
+.rating-score {
+	font-size: 18px;
+	font-weight: bold;
+	font-family: 'Courier New', Courier, monospace;
+}
+
+.rating-votes {
+	font-size: 9px;
+	opacity: 0.6;
+	margin-top: 2px;
+}
+
+/* IMDb specific styling */
+.imdb-rating .rating-source {
+	color: #f5c518;
+}
+
+.imdb-rating .rating-score {
+	color: #f5c518;
+}
+
+/* Rotten Tomatoes specific styling */
+.rt-rating .rating-source {
+	color: #fa320a;
+}
+
+.rt-rating.fresh .rating-score {
+	color: #00d100;
+}
+
+.rt-rating.rotten .rating-score {
+	color: #ff6600;
+}
+
+/* Metacritic specific styling */
+.meta-rating .rating-source {
+	color: #ffcc34;
+}
+
+.meta-rating.positive .rating-score {
+	color: #00ce7a;
+}
+
+.meta-rating.mixed .rating-score {
+	color: #ffcc34;
+}
+
+.meta-rating.negative .rating-score {
+	color: #ff6600;
+}
+
+/* Loading and error states */
+.ratings-loading, .no-ratings {
 	color: #f5c518;
 	font-style: italic;
 	font-size: 14px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+}
+
+/* Add a subtle pulse animation for loading states */
+.ratings-loading {
+	animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+	0% { opacity: 0.6; }
+	50% { opacity: 1; }
+	100% { opacity: 0.6; }
+}
+
+/* Responsive adjustments for ratings */
+@media screen and (max-width: 768px) {
+	.rating-item {
+		padding: 6px 10px;
+	}
+	
+	.rating-score {
+		font-size: 16px;
+	}
+	
+	.rating-source {
+		font-size: 10px;
+	}
 }
 
 .rt img, .rt2 img {

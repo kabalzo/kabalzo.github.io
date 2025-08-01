@@ -2204,7 +2204,7 @@
 			</div>
 		</div>
 		<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
-		<div class="movie" id="123" data-imdb-id="tt0240515/">
+		<div class="movie" id="123" data-imdb-id="tt0240515">
 			<div class="rating-box">
 				<div class="movie-title"><h3>Freddy Got Fingered</h3></div>
 				<div class="member-ratings"><ul>
@@ -3491,9 +3491,10 @@
 	</div>
 	<a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
 	<!-- Include the JavaScript file -->
-    <script src="./movieboys_rating.js"></script>
+    <script src="./movieboys-rating.js"></script>
 	<script src="env.js"></script>
-	<script src="imdb-ratings.js"></script>
+	<script src="get-ratings.js"></script>
+	<script src="api-usage-tracker.js"></script>
     
     <script>
         // Initialize ratings when page loads
@@ -3502,6 +3503,13 @@
             initAllMovieBoysRatings();
         });
     </script>
+
+	<!-- Hidden form for Netlify email alerts -->
+	<form name="api-alert" netlify hidden>
+		<input type="email" name="email" />
+		<input type="text" name="subject" />
+		<textarea name="message"></textarea>
+	</form>
 </body>
 <footer>
 	<p>Author: Drew Kabala</p>

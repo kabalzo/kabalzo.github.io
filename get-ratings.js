@@ -1,12 +1,12 @@
-// imdb-ratings.js - OMDB API version with secure key handling
+// imdb-ratings.js - Enhanced OMDB API version with all ratings
 
 // OMDB API configuration
 const OMDB_API_URL = "https://www.omdbapi.com/";
 
 // Cache configuration
-const CACHE_KEY_PREFIX = 'imdb_rating_';
+const CACHE_KEY_PREFIX = 'movie_ratings_';
 const CACHE_EXPIRY_DAYS = 15;
-const RATE_LIMIT_DELAY = 1000; // 1 second between API calls (OMDB is more lenient)
+const RATE_LIMIT_DELAY = 10000; // 10 second between API calls
 
 // API Key Management - Multiple secure options
 const APIKeyManager = {
@@ -75,22 +75,22 @@ const APIKeyManager = {
     }
 };
 
-// Cache utility functions (unchanged from your original)
+// Cache utility functions for all ratings
 const CacheUtils = {
-    setCachedRating: function(imdbId, rating) {
+    setCachedRatings: function(imdbId, ratingsData) {
         const cacheData = {
-            rating: rating,
+            ratings: ratingsData,
             timestamp: Date.now(),
             expiresAt: Date.now() + (CACHE_EXPIRY_DAYS * 24 * 60 * 60 * 1000)
         };
         try {
             localStorage.setItem(CACHE_KEY_PREFIX + imdbId, JSON.stringify(cacheData));
         } catch (e) {
-            console.warn('Failed to cache rating for', imdbId, e);
+            console.warn('Failed to cache ratings for', imdbId, e);
         }
     },
 
-    getCachedRating: function(imdbId) {
+    getCachedRatings: function(imdbId) {
         try {
             const cached = localStorage.getItem(CACHE_KEY_PREFIX + imdbId);
             if (!cached) return null;
@@ -102,7 +102,7 @@ const CacheUtils = {
                 return null;
             }
 
-            return cacheData.rating;
+            return cacheData.ratings;
         } catch (e) {
             console.warn('Failed to read cache for', imdbId, e);
             return null;
@@ -117,7 +117,7 @@ const CacheUtils = {
                     localStorage.removeItem(key);
                 }
             });
-            console.log('All IMDB rating cache cleared');
+            console.log('All movie ratings cache cleared');
         } catch (e) {
             console.warn('Failed to clear cache', e);
         }
@@ -159,11 +159,11 @@ class OMDBQueue {
         }
         
         this.processing = true;
-        console.log(`Starting to process ${this.queue.length} OMDB ratings...`);
+        console.log(`Starting to process ${this.queue.length} movie ratings...`);
 
         while (this.queue.length > 0) {
             const movieElement = this.queue.shift();
-            await this.fetchOMDBRatingWithDelay(movieElement);
+            await this.fetchOMDBRatingsWithDelay(movieElement);
             
             if (this.queue.length > 0) {
                 await this.delay(RATE_LIMIT_DELAY);
@@ -171,20 +171,121 @@ class OMDBQueue {
         }
 
         this.processing = false;
-        console.log('Finished processing all OMDB ratings');
+        console.log('Finished processing all movie ratings');
     }
 
     delay(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    async fetchOMDBRatingWithDelay(movieElement) {
-        const imdbId = movieElement.dataset.imdbId;
-        const imdbDiv = movieElement.querySelector('.imdb');
-        
-        if (!imdbId || !imdbDiv) return;
+    // Parse ratings from OMDB response
+    parseRatings(omdbData) {
+        const ratings = {
+            imdb: null,
+            rottenTomatoes: null,
+            metacritic: null,
+            title: omdbData.Title || 'Unknown',
+            year: omdbData.Year || 'Unknown',
+            votes: omdbData.imdbVotes || null
+        };
 
-        console.log(`Fetching OMDB rating for ${imdbId}...`);
+        // Parse IMDb rating
+        if (omdbData.imdbRating && omdbData.imdbRating !== 'N/A') {
+            ratings.imdb = parseFloat(omdbData.imdbRating);
+        }
+
+        // Parse ratings array
+        if (omdbData.Ratings && Array.isArray(omdbData.Ratings)) {
+            omdbData.Ratings.forEach(rating => {
+                switch (rating.Source) {
+                    case 'Rotten Tomatoes':
+                        const rtMatch = rating.Value.match(/(\d+)%/);
+                        if (rtMatch) {
+                            ratings.rottenTomatoes = parseInt(rtMatch[1]);
+                        }
+                        break;
+                    case 'Metacritic':
+                        const metaMatch = rating.Value.match(/(\d+)\/100/);
+                        if (metaMatch) {
+                            ratings.metacritic = parseInt(metaMatch[1]);
+                        }
+                        break;
+                }
+            });
+        }
+
+        return ratings;
+    }
+
+    // Create HTML for ratings display
+    createRatingsHTML(ratings) {
+        let html = '<div class="ratings-container">';
+
+        // IMDb Rating
+        if (ratings.imdb !== null) {
+            html += `
+                <div class="rating-item imdb-rating">
+                    <div class="rating-source">IMDb</div>
+                    <div class="rating-score">${ratings.imdb}/10</div>
+                    ${ratings.votes ? `<div class="rating-votes">${this.formatVotes(ratings.votes)}</div>` : ''}
+                </div>
+            `;
+        }
+
+        // Rotten Tomatoes Rating
+        if (ratings.rottenTomatoes !== null) {
+            const rtClass = ratings.rottenTomatoes >= 60 ? 'fresh' : 'rotten';
+            html += `
+                <div class="rating-item rt-rating ${rtClass}">
+                    <div class="rating-source">🍅 RT</div>
+                    <div class="rating-score">${ratings.rottenTomatoes}%</div>
+                </div>
+            `;
+        }
+
+        // Metacritic Rating
+        if (ratings.metacritic !== null) {
+            let metaClass = 'mixed';
+            if (ratings.metacritic >= 75) metaClass = 'positive';
+            else if (ratings.metacritic < 50) metaClass = 'negative';
+            
+            html += `
+                <div class="rating-item meta-rating ${metaClass}">
+                    <div class="rating-source">Metacritic</div>
+                    <div class="rating-score">${ratings.metacritic}/100</div>
+                </div>
+            `;
+        }
+
+        // If no ratings available
+        if (ratings.imdb === null && ratings.rottenTomatoes === null && ratings.metacritic === null) {
+            html += '<div class="no-ratings">No ratings available</div>';
+        }
+
+        html += '</div>';
+        return html;
+    }
+
+    // Format vote count for display
+    formatVotes(votes) {
+        if (!votes) return '';
+        // Remove commas and convert to number
+        const numVotes = parseInt(votes.replace(/,/g, ''));
+        if (numVotes >= 1000000) {
+            return `${(numVotes / 1000000).toFixed(1)}M votes`;
+        } else if (numVotes >= 1000) {
+            return `${(numVotes / 1000).toFixed(0)}K votes`;
+        }
+        return `${numVotes} votes`;
+    }
+
+    async fetchOMDBRatingsWithDelay(movieElement) {
+        const imdbId = movieElement.dataset.imdbId;
+        const ratingsDiv = movieElement.querySelector('.imdb');
+        
+        if (!imdbId || !ratingsDiv) return;
+
+        console.log(`Fetching ratings for ${imdbId}...`);
 
         try {
             // OMDB API call
@@ -194,25 +295,21 @@ class OMDBQueue {
             if (response.ok) {
                 const data = await response.json();
 
-                if (data.Response === 'True' && data.imdbRating && data.imdbRating !== 'N/A') {
-                    const rating = parseFloat(data.imdbRating);
+                if (data.Response === 'True') {
+                    const ratings = this.parseRatings(data);
                     
-                    // Cache the rating
-                    CacheUtils.setCachedRating(imdbId, rating);
+                    // Cache the ratings
+                    CacheUtils.setCachedRatings(imdbId, ratings);
                     
-                    // Update UI with additional info
-                    imdbDiv.innerHTML = `
-                        <div class="imdb-score" title="${data.Title} (${data.Year}) - ${data.imdbVotes} votes">
-                            ${rating}/10
-                        </div>
-                    `;
-                    console.log(`Successfully fetched rating for ${imdbId}: ${rating}/10`);
+                    // Update UI
+                    ratingsDiv.innerHTML = this.createRatingsHTML(ratings);
+                    console.log(`Successfully fetched ratings for ${imdbId}:`, ratings);
                 } else {
-                    imdbDiv.innerHTML = '<div class="imdb-loading">N/A</div>';
-                    console.warn(`No rating data found for ${imdbId}:`, data.Error || 'No rating available');
+                    ratingsDiv.innerHTML = '<div class="ratings-loading">N/A</div>';
+                    console.warn(`No data found for ${imdbId}:`, data.Error || 'No data available');
                 }
             } else {
-                imdbDiv.innerHTML = '<div class="imdb-loading">Error</div>';
+                ratingsDiv.innerHTML = '<div class="ratings-loading">Error</div>';
                 console.error(`OMDB API error for ${imdbId}: ${response.status}`);
                 
                 if (response.status === 401) {
@@ -222,8 +319,8 @@ class OMDBQueue {
                 }
             }
         } catch (error) {
-            imdbDiv.innerHTML = '<div class="imdb-loading">Error</div>';
-            console.error(`Error fetching OMDB rating for ${imdbId}:`, error);
+            ratingsDiv.innerHTML = '<div class="ratings-loading">Error</div>';
+            console.error(`Error fetching ratings for ${imdbId}:`, error);
         }
     }
 }
@@ -231,30 +328,30 @@ class OMDBQueue {
 // Create global queue instance
 const omdbQueue = new OMDBQueue();
 
-// Function to display cached rating or queue for fetching
-function loadIMDBRating(movieElement) {
+// Function to display cached ratings or queue for fetching
+function loadMovieRatings(movieElement) {
     const imdbId = movieElement.dataset.imdbId;
-    const imdbDiv = movieElement.querySelector('.imdb');
+    const ratingsDiv = movieElement.querySelector('.imdb');
     
-    if (!imdbId || !imdbDiv) {
-        if (imdbDiv) imdbDiv.innerHTML = '<div class="imdb-loading">N/A</div>';
+    if (!imdbId || !ratingsDiv) {
+        if (ratingsDiv) ratingsDiv.innerHTML = '<div class="ratings-loading">N/A</div>';
         return;
     }
 
     // Check cache first
-    const cachedRating = CacheUtils.getCachedRating(imdbId);
+    const cachedRatings = CacheUtils.getCachedRatings(imdbId);
     
-    if (cachedRating) {
-        imdbDiv.innerHTML = `<div class="imdb-score">${cachedRating}/10</div>`;
-        console.log(`Using cached rating for ${imdbId}: ${cachedRating}/10`);
+    if (cachedRatings) {
+        ratingsDiv.innerHTML = omdbQueue.createRatingsHTML(cachedRatings);
+        console.log(`Using cached ratings for ${imdbId}:`, cachedRatings);
     } else {
-        imdbDiv.innerHTML = '<div class="imdb-loading">Queued...</div>';
+        ratingsDiv.innerHTML = '<div class="ratings-loading">Loading ratings...</div>';
         omdbQueue.add(movieElement);
     }
 }
 
-// Function to load all IMDB ratings on the page (newest first)
-function loadAllIMDBRatings() {
+// Function to load all movie ratings on the page (newest first)
+function loadAllMovieRatings() {
     const movieElements = Array.from(document.querySelectorAll('.movie[data-imdb-id]'));
     
     // Sort by movie ID (newest first)
@@ -267,12 +364,12 @@ function loadAllIMDBRatings() {
     console.log(`Found ${movieElements.length} movies with IMDB IDs`);
 
     movieElements.forEach(movieElement => {
-        loadIMDBRating(movieElement);
+        loadMovieRatings(movieElement);
     });
 }
 
 // Utility functions
-function clearIMDBCache() {
+function clearRatingsCache() {
     CacheUtils.clearAllCache();
     location.reload();
 }
@@ -284,7 +381,7 @@ function showCacheStatus() {
 
     movieElements.forEach(movieElement => {
         const imdbId = movieElement.dataset.imdbId;
-        if (imdbId && CacheUtils.getCachedRating(imdbId)) {
+        if (imdbId && CacheUtils.getCachedRatings(imdbId)) {
             cachedCount++;
         }
     });
@@ -301,7 +398,7 @@ function clearStoredApiKey() {
 
 // Load ratings when page loads
 document.addEventListener('DOMContentLoaded', function() {
-    loadAllIMDBRatings();
+    loadAllMovieRatings();
     
     setTimeout(() => {
         showCacheStatus();
@@ -309,8 +406,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Expose utility functions globally
-window.IMDBUtils = {
-    clearCache: clearIMDBCache,
+window.RatingsUtils = {
+    clearCache: clearRatingsCache,
     showCacheStatus: showCacheStatus,
     clearApiKey: clearStoredApiKey,
     queue: omdbQueue

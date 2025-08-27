@@ -8,9 +8,42 @@ body {
 }
 
 .top {
-	color: white;
-	font-size: x-large;
-	height: 100px;
+	background-color: #FCECCB;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	height: 200px;
+	padding: 0 2%; /* slight edge padding */
+}
+
+.top > div {
+	flex-basis: 12.5%; /* 1/8 of 100% */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.logo {
+    flex-grow: 0;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 2rem; /* optional spacing around the logo */
+}
+
+.logo img {
+    height: auto;
+    max-height: 80px;
+    width: auto;
+    object-fit: contain;
+}
+
+
+.nic1 img,
+.nic2 img {
+	height: 150px;
+	max-width: 100%;
 }
 
 .container {
@@ -221,7 +254,8 @@ body {
 }
 
 .menu {
-	height: 100px;
+	height: auto;
+	min-height: 100px;
 }
 
 .menu ul {
@@ -230,24 +264,26 @@ body {
 	padding: 0;
 	overflow: hidden;
 	background-color: #333;
+	display: flex;
+	flex-wrap: wrap;
+    justify-content: center;
 }
 
 .menu li {
-	float: left;
 	font-size: 25px;
 	font-weight: bold;
 }
 
 .menu li a {
 	display: block;
-	color: darkred;
-	text-align: left;
+	color: #CC6633;
+	text-align: center;
 	padding: 28px 32px;
 	text-decoration: none;
 }
 
 .menu a:visited {
-	color: darkred;
+	color: #CC6633;
 }
 
 .menu a:hover {

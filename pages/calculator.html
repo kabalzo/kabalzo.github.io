@@ -36,16 +36,111 @@
 	<h1>Tier List Calculator</h1>
 	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
 	<div class="calc"> 
-		<p>Tyler</p>
-		<input type="text" id="tyler" value="">
-		<p>Alex</p>
-		<input type="text" id="alex" value="">
-		<p>Trevor</p>
-		<input type="text" id="trevor" value="">
-		<p>Jordan</p>
-		<input type="text" id="jordan" value="">
-		<p>Drew</p>
-		<input type="text" id="drew" value="">
+		<div class="calc-instructions">
+			<p>Enter grades (S, A, B, C, D, F) for each participant. Leave blank to exclude from calculation.</p>
+		</div>
+
+		<div class="calc-content">
+			<div class="calc-left">
+				<div class="calc-grid">
+					<div class="calc-item">
+						<p>Tyler</p>
+						<select id="tyler">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+
+					<div class="calc-item">
+						<p>Alex</p>
+						<select id="alex">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+
+					<div class="calc-item">
+						<p>Trevor</p>
+						<select id="trevor">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+
+					<div class="calc-item">
+						<p>Jordan</p>
+						<select id="jordan">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+
+					<div class="calc-item">
+						<p>Drew</p>
+						<select id="drew">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+
+					<div class="calc-item">
+						<p>Colin</p>
+						<select id="colin">
+							<option value="">Select Grade</option>
+							<option value="S">S</option>
+							<option value="A">A</option>
+							<option value="B">B</option>
+							<option value="C">C</option>
+							<option value="D">D</option>
+							<option value="F">F</option>
+						</select>
+					</div>
+				</div>
+
+				<div class="calc-buttons">
+					<button id="rank" onclick="tierListCalculator()">
+						<i class="fa fa-calculator"></i> Calculate Tier
+					</button>
+					<button id="clear" onclick="clearAll()">
+						<i class="fa fa-refresh"></i> Clear All
+					</button>
+				</div>
+			</div>
+
+			<div class="calc-right">
+				<div class="calc-result">
+					<p>Final Grade:</p>
+					<div id="ranking">-</div>
+					<div id="calculation-details"></div>
+				</div>
+			</div>
+		</div>
+
 		<div id="test1">
 			<p></p>
 		</div>
@@ -53,15 +148,398 @@
 			<p></p>
 		</div>
 	</div>
-	<script type="text/javascript" src="../functions.js"></script>
-	<button id="rank" onclick="tierListCalculator()">Rank</button>
-	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
-	<div id="ranking">
-		<p></p>
-	</div>
 	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
 	<div class="movie" id="0"></div>
 	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
+
+	<script>
+		// Inject CSS styles
+		function injectCalculatorStyles() {
+			const style = document.createElement('style');
+			style.textContent = `
+				.calc {
+					max-width: 1200px;
+					margin: 20px auto;
+					padding: 30px;
+					background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+					border: 3px solid #CC6633;
+					border-radius: 15px;
+				}
+
+				.calc-content {
+					display: flex;
+					gap: 30px;
+					align-items: flex-start;
+				}
+
+				.calc-left {
+					flex: 2;
+				}
+
+				.calc-right {
+					flex: 1;
+					min-width: 300px;
+				}
+
+				.calc-instructions {
+					text-align: center;
+					margin-bottom: 20px;
+					padding: 15px;
+					background: rgba(204, 102, 51, 0.1);
+					border-radius: 8px;
+					border: 1px solid #CC6633;
+				}
+
+				.calc-instructions p {
+					color: #CC6633;
+					font-weight: bold;
+					margin: 0;
+					font-size: 16px;
+				}
+
+				.calc-grid {
+					display: grid;
+					grid-template-columns: repeat(3, 1fr);
+					gap: 20px;
+					margin-bottom: 30px;
+				}
+
+				.calc-item {
+					background: rgba(0, 0, 0, 0.3);
+					border: 2px solid #444;
+					border-radius: 10px;
+					padding: 20px;
+					text-align: center;
+					transition: border-color 0.3s ease, transform 0.3s ease;
+				}
+
+				.calc-item:hover {
+					border-color: #CC6633;
+					transform: translateY(-2px);
+				}
+
+				.calc-item p {
+					color: #CC6633;
+					font-size: 18px;
+					font-weight: bold;
+					margin-bottom: 15px;
+					text-transform: uppercase;
+					letter-spacing: 1px;
+				}
+
+				.calc-item select {
+					width: 100%;
+					padding: 12px;
+					border: 2px solid #555;
+					border-radius: 8px;
+					background: #222;
+					color: white;
+					font-size: 16px;
+					font-weight: bold;
+					text-align: center;
+					cursor: pointer;
+					transition: border-color 0.3s ease;
+				}
+
+				.calc-item select:focus {
+					outline: none;
+					border-color: #CC6633;
+					box-shadow: 0 0 10px rgba(204, 102, 51, 0.3);
+				}
+
+				.calc-item select:hover {
+					border-color: #777;
+				}
+
+				.calc-item select option {
+					background: #222;
+					color: white;
+					font-weight: bold;
+				}
+
+				.calc-buttons {
+					display: flex;
+					justify-content: center;
+					gap: 20px;
+					margin-bottom: 30px;
+					flex-wrap: wrap;
+				}
+
+				.calc-buttons button {
+					padding: 15px 25px;
+					border: none;
+					border-radius: 8px;
+					font-size: 16px;
+					font-weight: bold;
+					cursor: pointer;
+					display: flex;
+					align-items: center;
+					gap: 8px;
+					transition: all 0.3s ease;
+					box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+				}
+
+				#rank {
+					background: linear-gradient(135deg, #4CAF50, #45a049);
+					color: white;
+				}
+
+				#rank:hover {
+					background: linear-gradient(135deg, #45a049, #3d8b40);
+					transform: translateY(-2px);
+					box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+				}
+
+				#clear {
+					background: linear-gradient(135deg, #f44336, #da190b);
+					color: white;
+				}
+
+				#clear:hover {
+					background: linear-gradient(135deg, #da190b, #c62828);
+					transform: translateY(-2px);
+					box-shadow: 0 6px 20px rgba(244, 67, 54, 0.3);
+				}
+
+				.calc-result {
+					text-align: center;
+					padding: 25px;
+					background: rgba(0, 0, 0, 0.4);
+					border-radius: 12px;
+					border: 2px solid #333;
+					height: fit-content;
+					position: sticky;
+					top: 20px;
+				}
+
+				.calc-result p {
+					color: #CC6633;
+					font-size: 20px;
+					font-weight: bold;
+					margin-bottom: 15px;
+					text-transform: uppercase;
+					letter-spacing: 2px;
+				}
+
+				#ranking {
+					font-size: 4em;
+					font-weight: bold;
+					margin: 20px 0;
+					text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.8);
+					transition: all 0.5s ease;
+					color: white;
+				}
+
+				#ranking.grade-s { color: #FFD700; text-shadow: 0 0 20px #FFD700; }
+				#ranking.grade-a { color: #4CAF50; text-shadow: 0 0 20px #4CAF50; }
+				#ranking.grade-b { color: #2196F3; text-shadow: 0 0 20px #2196F3; }
+				#ranking.grade-c { color: #FF9800; text-shadow: 0 0 20px #FF9800; }
+				#ranking.grade-d { color: #FF5722; text-shadow: 0 0 20px #FF5722; }
+				#ranking.grade-f { color: #F44336; text-shadow: 0 0 20px #F44336; }
+
+				#calculation-details {
+					color: #999;
+					font-size: 14px;
+					font-style: italic;
+					margin-top: 10px;
+					min-height: 20px;
+				}
+
+				@media (max-width: 768px) {
+					.calc {
+						margin: 10px;
+						padding: 20px;
+					}
+
+					.calc-content {
+						flex-direction: column;
+					}
+
+					.calc-right {
+						min-width: auto;
+					}
+					
+					.calc-grid {
+						grid-template-columns: 1fr;
+					}
+					
+					.calc-buttons {
+						flex-direction: column;
+						align-items: center;
+					}
+					
+					.calc-buttons button {
+						width: 200px;
+						justify-content: center;
+					}
+					
+					#ranking {
+						font-size: 2.5em;
+					}
+				}
+
+				@media (max-width: 1024px) and (min-width: 769px) {
+					.calc-grid {
+						grid-template-columns: repeat(2, 1fr);
+					}
+				}
+			`;
+			document.head.appendChild(style);
+		}
+
+		// Improved Tier List Calculator
+		function tierListCalculator() {
+			var tierValues = {"S": 5, "A": 4, "B": 3, "C": 2, "D": 1, "F": 0};
+			var participants = ["tyler", "alex", "trevor", "jordan", "drew", "colin"];
+			var gradeCounts = {"S": 0, "A": 0, "B": 0, "C": 0, "D": 0, "F": 0};
+			var finalGrade = "";
+			var participantCount = 0;
+			var totalScore = 0;
+			var scoresAverage = 0;
+			var trump = false;
+			var caseCheck = "";
+
+			// Collect grades
+			for (i = 0; i < participants.length; i++) {
+				var element = document.getElementById(participants[i]);
+				if (!element) continue;
+				
+				var grade = element.value.toUpperCase().trim();
+				var num = tierValues[grade];
+				
+				if (grade && num !== undefined) {
+					gradeCounts[grade] += 1;
+					totalScore += num;
+					participantCount++;
+				}
+			}
+			
+			scoresAverage = participantCount > 0 ? totalScore / participantCount : 0;
+
+			// Handle edge cases
+			if (participantCount == 0) {
+				finalGrade = ":(";
+				caseCheck = "No grades entered - please select at least one grade";
+			}
+			else if (participantCount == 1) {
+				for (var key in gradeCounts) {
+					if (gradeCounts[key] > 0) {
+						finalGrade = key;
+						break;
+					}
+				}
+				caseCheck = "Single participant grade";
+			}
+			else {
+				// Check for consensus cases
+				for (var key in gradeCounts) {
+					var value = gradeCounts[key];
+					
+					// Unanimous
+					if (value == participantCount) {
+						finalGrade = key;
+						trump = true;
+						caseCheck = "Unanimous " + key + " from all " + participantCount + " participants";
+						break;
+					}
+					
+					// Strong majority (n-1 votes)
+					if (value == (participantCount - 1) && participantCount >= 3) {
+						finalGrade = key;
+						trump = true;
+						caseCheck = "Strong majority: " + value + " of " + participantCount + " voted " + key;
+						break;
+					}
+				}
+			}
+			
+			// Average-based grading if no consensus
+			if (!trump && participantCount > 0) {
+				if (scoresAverage >= 4.5) {
+					finalGrade = "S";
+					caseCheck = "Exceptional average score (" + scoresAverage.toFixed(2) + ")";
+				} 
+				else if (scoresAverage >= 3.5) {
+					finalGrade = "A";
+					caseCheck = "Excellent average score (" + scoresAverage.toFixed(2) + ")";
+				}
+				else if (scoresAverage >= 2.5) {
+					finalGrade = "B";
+					caseCheck = "Good average score (" + scoresAverage.toFixed(2) + ")";
+				}
+				else if (scoresAverage >= 1.5) {
+					finalGrade = "C";
+					caseCheck = "Average score (" + scoresAverage.toFixed(2) + ")";
+				}
+				else if (scoresAverage >= 0.5) {
+					finalGrade = "D";
+					caseCheck = "Below average score (" + scoresAverage.toFixed(2) + ")";
+				}
+				else {
+					finalGrade = "F";
+					caseCheck = "Poor average score (" + scoresAverage.toFixed(2) + ")";
+				}
+			}
+			
+			displayResult(finalGrade, caseCheck);
+		}
+
+		function displayResult(grade, description) {
+			var rankingElement = document.getElementById("ranking");
+			var detailsElement = document.getElementById("calculation-details");
+			
+			if (rankingElement) {
+				rankingElement.innerHTML = grade;
+				
+				// Remove existing grade classes
+				rankingElement.className = "";
+				
+				// Add appropriate grade class for coloring
+				if (grade === "S") rankingElement.className = "grade-s";
+				else if (grade === "A") rankingElement.className = "grade-a";
+				else if (grade === "B") rankingElement.className = "grade-b";
+				else if (grade === "C") rankingElement.className = "grade-c";
+				else if (grade === "D") rankingElement.className = "grade-d";
+				else if (grade === "F") rankingElement.className = "grade-f";
+			}
+			
+			if (detailsElement) {
+				detailsElement.innerHTML = description || "";
+			}
+		}
+
+		function clearAll() {
+			var participants = ["tyler", "alex", "trevor", "jordan", "drew", "colin"];
+			
+			for (var i = 0; i < participants.length; i++) {
+				var element = document.getElementById(participants[i]);
+				if (element) {
+					element.value = "";
+				}
+			}
+			
+			displayResult("-", "Select grades and click Calculate Tier");
+		}
+
+		// Initialize when page loads
+		document.addEventListener('DOMContentLoaded', function() {
+			injectCalculatorStyles();
+			displayResult("-", "Select grades and click Calculate Tier");
+		});
+
+		// Keep your original password function
+		function myPassword() {
+			var password = "onetruegod";
+			(function passcodeprotect() {
+				var passcode = prompt("Enter PassCode");
+				while (passcode !== password) {
+					alert("Incorrect PassCode");
+					return passcodeprotect();
+				}
+			}());
+			alert('Welcome, ye of exquisite taste and culture.');
+		}
+	</script>
 </body>
 </html>
 <footer>

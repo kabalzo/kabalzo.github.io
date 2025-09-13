@@ -732,7 +732,8 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
                     const barHeight = Math.max(1, (parseFloat(data.average) / maxRating) * chartHeight * 0.8);
                     const barColor = parseFloat(data.average) >= 4.00 ? '#9400d3' :
                                 parseFloat(data.average) >= 3.00 ? '#4CAF50' :
-                                parseFloat(data.average) >= 2.00 ? '#FFC107' : '#F44336';
+                                parseFloat(data.average) >= 2.00 ? '#FFC107' :
+                                parseFloat(data.average) >= 1.00 ? '#F44336' : '#964B00' ;
                     
                     html += '<div style="display: flex; flex-direction: column; align-items: center; margin: 0 2px; min-width: 25px;">';
                     
@@ -763,7 +764,8 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
                 html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #9400d3; border-radius: 2px;"></div><span style="color: #ccc;">Godlike (4.00+)</span></div>';
                 html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #4CAF50; border-radius: 2px;"></div><span style="color: #ccc;">Good (3.00-3.99)</span></div>';
                 html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #FFC107; border-radius: 2px;"></div><span style="color: #ccc;">OK (2.00-2.99)</span></div>';
-                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #F44336; border-radius: 2px;"></div><span style="color: #ccc;">Bad (<1.99)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #F44336; border-radius: 2px;"></div><span style="color: #ccc;">Not Good (1.00-1.99)</span></div>';
+                html += '<div style="display: flex; align-items: center; gap: 5px;"><div style="width: 12px; height: 12px; background-color: #964B00; border-radius: 2px;"></div><span style="color: #ccc;">Ass (<1.00)</span></div>';
                 html += '</div>';
             } else {
                 html += '<div style="color: #999; text-align: center; margin: 40px 0;">No date data available for chart</div>';

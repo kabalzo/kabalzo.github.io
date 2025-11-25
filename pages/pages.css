@@ -98,6 +98,7 @@ body {
 	margin-left: auto;
 	margin-right: auto; /* Center the table */
 	overflow-x: auto; /* Allow horizontal scrolling if needed */
+	-webkit-overflow-scrolling: touch; /* Smooth scrolling on iOS */
 }
 
 .table-container table {
@@ -608,7 +609,100 @@ footer {
 }
 
 /* Responsive design for mobile */
+@media (max-width: 768px) {
+    .top {
+        height: auto;
+        padding: 15px 2%;
+    }
+
+    .nic1 img, .nic2 img {
+        height: 100px;
+    }
+
+    .logo img {
+        max-height: 60px;
+    }
+
+    .menu ul {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .menu li {
+        font-size: 20px;
+        width: 100%;
+        border-bottom: 1px solid #444;
+    }
+
+    .menu li:last-child {
+        border-bottom: none;
+    }
+
+    .menu li a {
+        padding: 18px 20px;
+        width: 100%;
+    }
+
+    .container {
+        margin-bottom: 15px;
+    }
+
+    .table-container {
+        font-size: small;
+        max-width: 98%;
+        margin-bottom: 30px;
+    }
+
+    .table-container th,
+    .table-container td {
+        padding: 4px 6px;
+        font-size: 12px;
+    }
+
+    .table-container table {
+        min-width: 900px;
+    }
+
+    .about {
+        font-size: 14px;
+        max-width: 95vw;
+        min-width: 200px;
+        height: auto;
+        min-height: 250px;
+        padding: 15px;
+    }
+
+    h1, h2 {
+        font-size: large;
+    }
+
+    h3 {
+        font-size: medium;
+    }
+}
+
 @media (max-width: 600px) {
+    .top {
+        height: auto;
+        padding: 10px 2%;
+    }
+
+    .nic1 img, .nic2 img {
+        height: 70px;
+    }
+
+    .logo img {
+        max-height: 45px;
+    }
+
+    .menu li {
+        font-size: 16px;
+    }
+
+    .menu li a {
+        padding: 15px;
+    }
+
     .progress-meter {
         padding: 15px;
         max-width: 95%;
@@ -640,12 +734,15 @@ footer {
         flex-direction: column;
         align-items: stretch;
         text-align: center;
+        padding: 10px;
     }
 
     .sort-toggle-btn, .random-movie-btn {
         justify-content: center;
         width: 100%;
         margin-bottom: 10px;
+        padding: 12px 16px;
+        font-size: 14px;
     }
 
     .movie-popup {
@@ -654,11 +751,101 @@ footer {
     }
 
     .popup-body {
-        padding: 20px;
+        padding: 15px;
+    }
+
+    .movie-field {
+        margin-bottom: 10px;
+        padding: 6px 0;
     }
 
     .movie-field strong {
-        min-width: 80px;
+        min-width: 70px;
+        font-size: 13px;
+    }
+
+    .movie-field span {
+        font-size: 13px;
+    }
+
+    .table-container {
+        max-width: 100%;
+        padding: 0 5px;
+    }
+
+    .table-container th,
+    .table-container td {
+        padding: 3px 4px;
+        font-size: 11px;
+    }
+
+    .about {
+        font-size: 13px;
+        max-width: 95vw;
+        min-width: 180px;
+        padding: 12px;
+    }
+
+    .about p {
+        font-size: 13px;
+    }
+
+    h1 {
+        font-size: medium;
+        padding: 10px;
+    }
+
+    h2 {
+        font-size: medium;
+    }
+
+    .buffer {
+        height: 50px;
+    }
+}
+
+@media (max-width: 400px) {
+    .top {
+        padding: 8px 1%;
+    }
+
+    .nic1 img, .nic2 img {
+        height: 50px;
+    }
+
+    .logo img {
+        max-height: 35px;
+    }
+
+    .menu li {
         font-size: 14px;
+    }
+
+    .menu li a {
+        padding: 12px 10px;
+    }
+
+    .table-container th,
+    .table-container td {
+        padding: 2px 3px;
+        font-size: 10px;
+    }
+
+    .progress-title {
+        font-size: 14px;
+    }
+
+    .progress-stats {
+        font-size: 12px;
+    }
+
+    .sort-toggle-btn, .random-movie-btn {
+        padding: 10px 12px;
+        font-size: 13px;
+    }
+
+    .about {
+        font-size: 12px;
+        padding: 10px;
     }
 }

@@ -304,13 +304,32 @@ function handleEscapeKey(e) {
 
 function displayTable(result, tableName) {
     const { columns, values } = result;
-    
+
+    // Calculate watched movies statistics
+    const watchedIndex = columns.indexOf('watched');
+    const totalMovies = values.length;
+    const watchedMovies = values.filter(row => row[watchedIndex] === 'Y').length;
+    const percentage = totalMovies > 0 ? ((watchedMovies / totalMovies) * 100).toFixed(1) : 0;
+
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;
-    
+
+    // Add progress meter
+    html += '<div class="progress-meter">';
+    html += `<div class="progress-header">
+                <span class="progress-title"><i class="fa fa-film"></i> Nicolas Cage Movie Marathon Progress</span>
+                <span class="progress-stats">${watchedMovies} / ${totalMovies} Movies Watched</span>
+             </div>`;
+    html += `<div class="progress-bar-container">
+                <div class="progress-bar" style="width: ${percentage}%">
+                    <span class="progress-percentage">${percentage}%</span>
+                </div>
+             </div>`;
+    html += '</div>';
+
     // Add control buttons
     html += '<div class="sort-controls">';
     html += `<button onclick="toggleSort()" class="sort-toggle-btn">
-                Sort by ${currentSortMode === 'year' ? 'Watched Date' : 'Year'} 
+                Sort by ${currentSortMode === 'year' ? 'Watched Date' : 'Year'}
                 <i class="fa fa-sort"></i>
              </button>`;
     html += `<button onclick="pickRandomMovie()" class="random-movie-btn">

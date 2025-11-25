@@ -326,6 +326,77 @@ footer {
 	z-index: 1000; /* Ensure footer is on top */
 }
 
+/* Progress Meter Styling */
+.progress-meter {
+    margin: 20px auto;
+    padding: 20px;
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+    border: 3px solid #CC6633;
+    border-radius: 12px;
+    max-width: 90%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.progress-title {
+    color: #CC6633;
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-stats {
+    color: #ffd700;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 40px;
+    background-color: #222;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    border: 2px solid #444;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #4CAF50 0%, #45a049 50%, #66bb6a 100%);
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: width 0.5s ease-in-out;
+    border-radius: 18px;
+    position: relative;
+}
+
+.progress-percentage {
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+    position: absolute;
+}
+
+@keyframes shimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
 /* Sort Controls Styling */
 .sort-controls {
     margin: 20px 0;
@@ -533,27 +604,54 @@ footer {
 
 /* Responsive design for mobile */
 @media (max-width: 600px) {
+    .progress-meter {
+        padding: 15px;
+        max-width: 95%;
+    }
+
+    .progress-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .progress-title {
+        font-size: 16px;
+    }
+
+    .progress-stats {
+        font-size: 14px;
+    }
+
+    .progress-bar-container {
+        height: 35px;
+    }
+
+    .progress-percentage {
+        font-size: 14px;
+    }
+
     .sort-controls {
         flex-direction: column;
         align-items: stretch;
         text-align: center;
     }
-    
+
     .sort-toggle-btn, .random-movie-btn {
         justify-content: center;
         width: 100%;
         margin-bottom: 10px;
     }
-    
+
     .movie-popup {
         width: 95%;
         margin: 10px;
     }
-    
+
     .popup-body {
         padding: 20px;
     }
-    
+
     .movie-field strong {
         min-width: 80px;
         font-size: 14px;

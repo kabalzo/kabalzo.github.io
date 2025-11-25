@@ -366,9 +366,10 @@ footer {
     height: 40px;
     background-color: #222;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
     border: 2px solid #444;
+    position: relative;
 }
 
 .progress-bar {
@@ -381,7 +382,6 @@ footer {
     justify-content: center;
     transition: width 0.5s ease-in-out;
     border-radius: 18px;
-    position: relative;
 }
 
 .progress-percentage {
@@ -390,6 +390,11 @@ footer {
     font-weight: bold;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
     position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    pointer-events: none;
 }
 
 @keyframes shimmer {

@@ -308,7 +308,12 @@ function displayTable(result, tableName) {
     // Calculate watched movies statistics
     const watchedIndex = columns.indexOf('watched');
     const totalMovies = values.length;
-    const watchedMovies = values.filter(row => row[watchedIndex] === 'Y').length;
+    // Count movies where watched is 'Y' (case-insensitive and trimmed)
+    const watchedMovies = values.filter(row => {
+        const watchedValue = row[watchedIndex];
+        if (watchedValue === null || watchedValue === undefined) return false;
+        return String(watchedValue).trim().toUpperCase() === 'Y';
+    }).length;
     const percentage = totalMovies > 0 ? ((watchedMovies / totalMovies) * 100).toFixed(1) : 0;
 
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;
@@ -320,9 +325,8 @@ function displayTable(result, tableName) {
                 <span class="progress-stats">${watchedMovies} / ${totalMovies} Movies Watched</span>
              </div>`;
     html += `<div class="progress-bar-container">
-                <div class="progress-bar" style="width: ${percentage}%">
-                    <span class="progress-percentage">${percentage}%</span>
-                </div>
+                <div class="progress-bar" style="width: ${percentage}%"></div>
+                <span class="progress-percentage">${percentage}%</span>
              </div>`;
     html += '</div>';
 

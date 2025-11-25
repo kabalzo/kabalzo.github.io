@@ -306,19 +306,9 @@ function displayTable(result, tableName) {
     const { columns, values } = result;
 
     // Calculate watched movies statistics
-    // DEBUG: Log column names and structure
-    console.log('Columns:', columns);
-    console.log('First row sample:', values[0]);
-
-    const watchedIndex = columns.indexOf('watched');
-    console.log('Watched column index:', watchedIndex);
-
+    // Find 'watched' column (case-insensitive)
+    const watchedIndex = columns.findIndex(col => col.toLowerCase() === 'watched');
     const totalMovies = values.length;
-
-    // DEBUG: Log first few watched values
-    if (watchedIndex >= 0) {
-        console.log('First 5 watched values:', values.slice(0, 5).map(row => row[watchedIndex]));
-    }
 
     // Count movies where watched is 'Y' (case-insensitive and trimmed)
     const watchedMovies = values.filter(row => {
@@ -327,7 +317,6 @@ function displayTable(result, tableName) {
         return String(watchedValue).trim().toUpperCase() === 'Y';
     }).length;
 
-    console.log('Watched movies count:', watchedMovies);
     const percentage = totalMovies > 0 ? ((watchedMovies / totalMovies) * 100).toFixed(1) : 0;
 
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;

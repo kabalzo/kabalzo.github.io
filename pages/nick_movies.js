@@ -306,14 +306,17 @@ function displayTable(result, tableName) {
     const { columns, values } = result;
 
     // Calculate watched movies statistics
-    const watchedIndex = columns.indexOf('watched');
+    // Find 'watched' column (case-insensitive)
+    const watchedIndex = columns.findIndex(col => col.toLowerCase() === 'watched');
     const totalMovies = values.length;
+
     // Count movies where watched is 'Y' (case-insensitive and trimmed)
     const watchedMovies = values.filter(row => {
         const watchedValue = row[watchedIndex];
         if (watchedValue === null || watchedValue === undefined) return false;
         return String(watchedValue).trim().toUpperCase() === 'Y';
     }).length;
+
     const percentage = totalMovies > 0 ? ((watchedMovies / totalMovies) * 100).toFixed(1) : 0;
 
     let html = `<h2>Table: ${tableName} (${values.length} rows)</h2>`;

@@ -318,13 +318,77 @@ body {
 
 footer {
 	text-align: center;
-	padding: 20px 3px;
-	background-color: slategray;
-	color: wheat;
+	padding: 30px 20px;
+	background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+	color: #CC6633;
 	margin-top: auto; /* This pushes footer to bottom */
+	border-top: 4px solid goldenrod;
+	box-shadow: 0 -4px 20px rgba(218, 165, 32, 0.2);
 	clear: both;
 	position: relative;
 	z-index: 1000; /* Ensure footer is on top */
+}
+
+footer p {
+	margin: 10px 0;
+	font-size: 14px;
+	font-weight: 500;
+	letter-spacing: 0.5px;
+}
+
+footer a {
+	color: goldenrod;
+	text-decoration: none;
+	font-weight: bold;
+	transition: all 0.3s ease;
+	border-bottom: 2px solid transparent;
+	padding-bottom: 2px;
+}
+
+footer a:hover {
+	color: #FFD700;
+	border-bottom: 2px solid #FFD700;
+	text-shadow: 0 0 8px rgba(255, 215, 0, 0.5);
+}
+
+footer a:visited {
+	color: goldenrod;
+}
+
+/* Responsive footer adjustments */
+@media (max-width: 768px) {
+	footer {
+		padding: 25px 15px;
+		border-top-width: 3px;
+	}
+
+	footer p {
+		font-size: 13px;
+		margin: 8px 0;
+	}
+}
+
+@media (max-width: 600px) {
+	footer {
+		padding: 20px 10px;
+	}
+
+	footer p {
+		font-size: 12px;
+		margin: 6px 0;
+	}
+}
+
+@media (max-width: 400px) {
+	footer {
+		padding: 15px 8px;
+		border-top-width: 2px;
+	}
+
+	footer p {
+		font-size: 11px;
+		margin: 5px 0;
+	}
 }
 
 /* Progress Meter Styling */

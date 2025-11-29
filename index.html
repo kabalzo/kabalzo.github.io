@@ -4163,7 +4163,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Option 1: Initialize all movies at once
             initAllMovieBoysRatings();
+
+            // Initialize back to top button
+            initBackToTopButton();
         });
+
+        // Back to Top Button Functionality
+        function initBackToTopButton() {
+            const backToTopBtn = document.getElementById('backToTopBtn');
+
+            // Show button when user scrolls down 300px from the top
+            window.addEventListener('scroll', function() {
+                if (window.pageYOffset > 300) {
+                    backToTopBtn.classList.add('show');
+                } else {
+                    backToTopBtn.classList.remove('show');
+                }
+            });
+
+            // Smooth scroll to top when button is clicked
+            backToTopBtn.addEventListener('click', function() {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        }
     </script>
 
 	<!-- Hidden form for Netlify email alerts -->
@@ -4172,6 +4197,11 @@
 		<input type="text" name="subject" />
 		<textarea name="message"></textarea>
 	</form>
+
+	<!-- Floating Back to Top Button -->
+	<button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
+		<i class="fa fa-arrow-up"></i>
+	</button>
 </body>
 <footer>
 	<p>Author: Drew Kabala</p>

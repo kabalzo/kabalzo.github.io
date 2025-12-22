@@ -24,16 +24,20 @@ Where `maxStdDev = 2.0` for the 0-5 rating scale.
 - Ratings: [3.5, 4.7, 3.5, 1.5] → Std Dev: 1.25 → **Consensus: 37%** (Low agreement)
 
 ### 3. **Weighted Rating**
-The weighted rating moderates extreme scores when consensus is low:
-```
-Weighted = Raw × (0.85 + 0.15 × Consensus)
-```
+The weighted rating adjusts for outliers and uncertainty based on consensus:
 
-**Effect:**
-- **100% consensus**: Weighted = Raw rating (no moderation)
-- **0% consensus**: Weighted = Raw × 0.85 (15% moderation toward neutral)
+**High Consensus (≥70%):**
+- Weights 58-70% toward the **median** rating
+- Dampens outlier effect (one very high or low score doesn't skew the average)
+- If most people agree but one person rated differently, weighted moves toward the group
 
-This means low-consensus extreme ratings are slightly pulled toward the middle (2.5/5).
+**Medium Consensus (40-69%):**
+- Weights 8-14% toward median
+- Slight adjustment to reduce outlier impact
+
+**Low Consensus (<40%):**
+- Weights 9-15% toward middle (2.5/5) as uncertainty penalty
+- When the group can't agree, rating reliability decreases
 
 ## Visual Display
 
@@ -47,30 +51,43 @@ This means low-consensus extreme ratings are slightly pulled toward the middle (
 
 ## Example Scenarios
 
-### High Consensus Movie
+### High Consensus with One Outlier (Dampened)
+```
+Ratings: Tyler 4.5, Alex 4.4, Trevor 4.6, Jordan 2.0 (outlier)
+Raw: 3.88/5 (pulled down by outlier)
+Median: 4.45/5 (what most people think)
+Consensus: 73% (green bar)
+Weighted: 4.26/5 (moved UP toward median, dampening outlier)
+```
+**Interpretation**: One person disagreed, but weighted rating trusts the group consensus.
+
+### Perfect Agreement
 ```
 Ratings: Tyler 4.5, Alex 4.3, Trevor 4.4, Jordan 4.6
 Raw: 4.45/5
+Median: 4.45/5
 Consensus: 93% (green bar)
-Weighted: 4.45/5 (same as raw)
+Weighted: 4.45/5 (minimal adjustment)
 ```
 **Interpretation**: Everyone loved it, rating is highly reliable.
 
-### Low Consensus Movie
+### Low Consensus - Penalty Applied
 ```
 Ratings: Tyler 5.0, Alex 2.0, Trevor 4.0, Jordan 1.5
 Raw: 3.13/5
+Median: 3.00/5
 Consensus: 28% (red bar)
-Weighted: 2.95/5 (moderated down)
+Weighted: 3.06/5 (pulled toward 2.5 as penalty)
 ```
-**Interpretation**: Major disagreement, raw average may be misleading.
+**Interpretation**: Major disagreement, rating reliability is low.
 
 ### Universally Disliked (High Consensus)
 ```
 Ratings: Tyler 1.0, Alex 1.2, Trevor 0.8, Jordan 1.1
 Raw: 1.03/5
+Median: 1.05/5
 Consensus: 90% (green bar)
-Weighted: 1.03/5
+Weighted: 1.04/5 (minimal adjustment)
 ```
 **Interpretation**: Everyone hated it, low score is reliable.
 
@@ -78,9 +95,13 @@ Weighted: 1.03/5
 
 **Formula Components:**
 - Standard Deviation: `sqrt(Σ(xi - mean)² / n)`
+- Median: Middle value when ratings are sorted
 - Consensus Score: `round((1 - min(stdDev/2.0, 1.0)) × 100)`
-- Moderation Weight: `0.85 + 0.15 × (consensus/100)`
-- Weighted Rating: `raw × modWeight + 2.5 × (1 - modWeight)`
+
+**Weighted Rating Formula:**
+- **High Consensus (≥70%)**: `raw × (1 - w) + median × w` where `w = 0.58 to 0.7`
+- **Medium Consensus (40-69%)**: `raw × (1 - w) + median × w` where `w = 0.08 to 0.14`
+- **Low Consensus (<40%)**: `raw × (1 - w) + 2.5 × w` where `w = 0.09 to 0.15`
 
 **Files Modified:**
 - `movieboys-rating.js`: Calculation logic

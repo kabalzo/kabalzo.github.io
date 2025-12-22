@@ -34,15 +34,38 @@ function calculateConsensusScore(stdDev) {
     return Math.round((1 - normalizedStdDev) * 100);
 }
 
+// Function to calculate median of ratings
+function calculateMedian(values) {
+    const sorted = values.slice().sort((a, b) => a - b);
+    const middle = Math.floor(sorted.length / 2);
+
+    if (sorted.length % 2 === 0) {
+        return (sorted[middle - 1] + sorted[middle]) / 2;
+    } else {
+        return sorted[middle];
+    }
+}
+
 // Function to calculate weighted rating based on consensus
-// High consensus = rating stays as-is
-// Low consensus = rating is slightly moderated toward middle (2.5)
-function calculateWeightedRating(rawRating, consensusScore) {
+// High consensus = weight toward median (dampens outlier effect)
+// Low consensus = weight toward middle (uncertainty penalty)
+function calculateWeightedRating(rawRating, consensusScore, median) {
     const consensusFactor = consensusScore / 100;
-    // Apply minimal moderation - only affects low consensus ratings
-    const moderationWeight = 0.85 + (0.15 * consensusFactor);
-    const middleRating = 2.5;
-    return (rawRating * moderationWeight + middleRating * (1 - moderationWeight)).toFixed(2);
+
+    if (consensusScore >= 70) {
+        // High consensus: trust the group, dampen outliers by weighting toward median
+        const weight = 0.3 + (0.4 * consensusFactor); // 0.58 to 0.7
+        return (rawRating * (1 - weight) + median * weight).toFixed(2);
+    } else if (consensusScore >= 40) {
+        // Medium consensus: slight adjustment toward median
+        const weight = 0.2 * consensusFactor; // 0.08 to 0.14
+        return (rawRating * (1 - weight) + median * weight).toFixed(2);
+    } else {
+        // Low consensus: penalty - weight toward middle (2.5)
+        const middleRating = 2.5;
+        const weight = 0.15 * (1 - consensusFactor); // 0.09 to 0.15
+        return (rawRating * (1 - weight) + middleRating * weight).toFixed(2);
+    }
 }
 
 // Function to calculate average rating and consensus metrics from <li> elements
@@ -74,15 +97,19 @@ function calculateMovieRating(movieElement) {
     const sum = validRatings.reduce((acc, rating) => acc + rating, 0);
     const rawRating = sum / validRatings.length;
 
+    // Calculate median (resistant to outliers)
+    const medianRating = calculateMedian(validRatings);
+
     // Calculate consensus metrics
     const stdDev = calculateStandardDeviation(validRatings, rawRating);
     const consensusScore = calculateConsensusScore(stdDev);
-    const weightedRating = calculateWeightedRating(rawRating, consensusScore);
+    const weightedRating = calculateWeightedRating(rawRating, consensusScore, medianRating);
 
     return {
         raw: rawRating.toFixed(2),
         consensus: consensusScore,
         weighted: weightedRating,
+        median: medianRating.toFixed(2),
         stdDev: stdDev.toFixed(2)
     };
 }

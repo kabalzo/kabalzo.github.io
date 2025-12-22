@@ -577,7 +577,7 @@ footer a:visited {
 
 /* Movie Boys Rating Styles */
 .movieboys-rating {
-	flex: 0 0 150px;
+	flex: 0 0 180px;
     height: 300px;
     background-color: #1a1a1a;
     border: 3px solid goldenrod;
@@ -586,22 +586,80 @@ footer a:visited {
     box-sizing: border-box;
     text-align: center;
     order: 99; /* This pushes it to the right in flexbox */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .movieboys-rating h4 {
     color: goldenrod;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
-    margin: 0 0 15px 0;
+    margin: 0 0 10px 0;
     font-family: 'Courier New', Courier, monospace;
 }
 
 .movieboys-rating .score {
-    color: green;
-    font-size: 48px;
+    color: #4CAF50;
+    font-size: 36px;
     font-weight: bold;
     font-family: 'Courier New', Courier, monospace;
-    margin-top: 50px;
+    margin: 5px 0;
+}
+
+.movieboys-rating .raw-score {
+    font-size: 42px;
+    color: #4CAF50;
+}
+
+.movieboys-rating .weighted-score {
+    font-size: 28px;
+    color: #FFA726;
+}
+
+.movieboys-rating .weighted-label {
+    display: block;
+    font-size: 12px;
+    color: goldenrod;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+/* Consensus Meter Styles */
+.consensus-meter {
+    margin: 10px 0;
+    padding: 8px 0;
+}
+
+.consensus-label {
+    color: goldenrod;
+    font-size: 12px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.consensus-bar-container {
+    width: 100%;
+    height: 18px;
+    background-color: #333;
+    border-radius: 9px;
+    overflow: hidden;
+    border: 1px solid #555;
+    margin-bottom: 5px;
+}
+
+.consensus-bar {
+    height: 100%;
+    transition: width 0.3s ease, background-color 0.3s ease;
+    border-radius: 9px 0 0 9px;
+}
+
+.consensus-percent {
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 /* Add a subtle pulse animation for loading states */
@@ -780,13 +838,28 @@ footer a:visited {
 		font-size: 10px;
 	}
 
-	.movieboys-rating .score {
-		font-size: 36px;
-		margin-top: 30px;
+	.movieboys-rating .raw-score {
+		font-size: 32px;
+	}
+
+	.movieboys-rating .weighted-score {
+		font-size: 22px;
 	}
 
 	.movieboys-rating h4 {
-		font-size: 16px;
+		font-size: 14px;
+	}
+
+	.consensus-label {
+		font-size: 11px;
+	}
+
+	.consensus-bar-container {
+		height: 16px;
+	}
+
+	.consensus-percent {
+		font-size: 12px;
 	}
 
 	.rating-source {

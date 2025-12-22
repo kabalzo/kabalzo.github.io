@@ -24,20 +24,22 @@ Where `maxStdDev = 2.0` for the 0-5 rating scale.
 - Ratings: [3.5, 4.7, 3.5, 1.5] → Std Dev: 1.25 → **Consensus: 37%** (Low agreement)
 
 ### 3. **Weighted Rating**
-The weighted rating adjusts for outliers and uncertainty based on consensus:
+The weighted rating **always** adjusts toward the median to dampen outlier effects:
 
-**High Consensus (≥70%):**
-- Weights 58-70% toward the **median** rating
-- Dampens outlier effect (one very high or low score doesn't skew the average)
-- If most people agree but one person rated differently, weighted moves toward the group
+**Formula:** `weighted = raw × (1 - w) + median × w`
 
-**Medium Consensus (40-69%):**
-- Weights 8-14% toward median
-- Slight adjustment to reduce outlier impact
+Where `w = (1 - consensus%) × 0.75`
 
-**Low Consensus (<40%):**
-- Weights 9-15% toward middle (2.5/5) as uncertainty penalty
-- When the group can't agree, rating reliability decreases
+**How it works:**
+- **Low consensus** (outliers present): Weights up to **75%** toward median
+  - Example: 22% consensus → 58% weight toward median
+  - Heavily dampens the outlier's effect on the average
+
+- **High consensus** (everyone agrees): Minimal weighting
+  - Example: 94% consensus → 4.5% weight toward median
+  - Raw and weighted are nearly identical
+
+- **Key insight**: When consensus is low due to ONE outlier, the weighted score moves toward what most people rated (the median), not toward the middle of the scale
 
 ## Visual Display
 
@@ -51,43 +53,53 @@ The weighted rating adjusts for outliers and uncertainty based on consensus:
 
 ## Example Scenarios
 
-### High Consensus with One Outlier (Dampened)
+### Moonfall - One Low Outlier (Fixed!)
 ```
-Ratings: Tyler 4.5, Alex 4.4, Trevor 4.6, Jordan 2.0 (outlier)
+Ratings: 4.5, 4.0, 4.8, 0.5 (outlier!), 3.9
+Raw: 3.54/5 (dragged down by 0.5)
+Median: 4.0/5 (what most people think)
+Consensus: 22% (red bar - low due to outlier)
+Weighted: 3.81/5 (moved UP toward median, dampening outlier)
+```
+**Interpretation**: One person hated it, but 4/5 people rated 3.9-4.8. Weighted score trusts the majority.
+
+### Medium Consensus with One Outlier
+```
+Ratings: 4.5, 4.4, 4.6, 2.0 (outlier)
 Raw: 3.88/5 (pulled down by outlier)
 Median: 4.45/5 (what most people think)
-Consensus: 73% (green bar)
-Weighted: 4.26/5 (moved UP toward median, dampening outlier)
+Consensus: 46% (yellow bar)
+Weighted: 4.11/5 (moved UP toward median)
 ```
-**Interpretation**: One person disagreed, but weighted rating trusts the group consensus.
+**Interpretation**: One person disagreed, weighted rating dampens their outlier vote.
 
 ### Perfect Agreement
 ```
-Ratings: Tyler 4.5, Alex 4.3, Trevor 4.4, Jordan 4.6
+Ratings: 4.5, 4.3, 4.4, 4.6
 Raw: 4.45/5
 Median: 4.45/5
-Consensus: 93% (green bar)
-Weighted: 4.45/5 (minimal adjustment)
+Consensus: 94% (green bar)
+Weighted: 4.45/5 (virtually no adjustment)
 ```
 **Interpretation**: Everyone loved it, rating is highly reliable.
 
-### Low Consensus - Penalty Applied
+### True Disagreement (Not Outliers)
 ```
-Ratings: Tyler 5.0, Alex 2.0, Trevor 4.0, Jordan 1.5
+Ratings: 5.0, 2.0, 4.0, 1.5
 Raw: 3.13/5
 Median: 3.00/5
 Consensus: 28% (red bar)
-Weighted: 3.06/5 (pulled toward 2.5 as penalty)
+Weighted: 3.06/5 (slight move toward median)
 ```
-**Interpretation**: Major disagreement, rating reliability is low.
+**Interpretation**: Major disagreement across the board, rating has low reliability.
 
 ### Universally Disliked (High Consensus)
 ```
-Ratings: Tyler 1.0, Alex 1.2, Trevor 0.8, Jordan 1.1
+Ratings: 1.0, 1.2, 0.8, 1.1
 Raw: 1.03/5
 Median: 1.05/5
-Consensus: 90% (green bar)
-Weighted: 1.04/5 (minimal adjustment)
+Consensus: 92% (green bar)
+Weighted: 1.03/5 (minimal adjustment)
 ```
 **Interpretation**: Everyone hated it, low score is reliable.
 
@@ -99,9 +111,15 @@ Weighted: 1.04/5 (minimal adjustment)
 - Consensus Score: `round((1 - min(stdDev/2.0, 1.0)) × 100)`
 
 **Weighted Rating Formula:**
-- **High Consensus (≥70%)**: `raw × (1 - w) + median × w` where `w = 0.58 to 0.7`
-- **Medium Consensus (40-69%)**: `raw × (1 - w) + median × w` where `w = 0.08 to 0.14`
-- **Low Consensus (<40%)**: `raw × (1 - w) + 2.5 × w` where `w = 0.09 to 0.15`
+```
+weight = (1 - consensus/100) × 0.75
+weighted = raw × (1 - weight) + median × weight
+```
+
+**Examples:**
+- 22% consensus → weight = 0.585 (58.5% toward median)
+- 46% consensus → weight = 0.405 (40.5% toward median)
+- 94% consensus → weight = 0.045 (4.5% toward median)
 
 **Files Modified:**
 - `movieboys-rating.js`: Calculation logic

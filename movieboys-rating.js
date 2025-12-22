@@ -47,25 +47,17 @@ function calculateMedian(values) {
 }
 
 // Function to calculate weighted rating based on consensus
-// High consensus = weight toward median (dampens outlier effect)
-// Low consensus = weight toward middle (uncertainty penalty)
+// ALWAYS weights toward median to dampen outlier effects
+// Low consensus (outliers) = weight heavily toward median
+// High consensus (agreement) = minimal weighting (raw ≈ median anyway)
 function calculateWeightedRating(rawRating, consensusScore, median) {
-    const consensusFactor = consensusScore / 100;
+    const consensusFactor = consensusScore / 100; // 0 to 1
+    const maxWeight = 0.75; // Maximum weighting toward median (at 0% consensus)
 
-    if (consensusScore >= 70) {
-        // High consensus: trust the group, dampen outliers by weighting toward median
-        const weight = 0.3 + (0.4 * consensusFactor); // 0.58 to 0.7
-        return (rawRating * (1 - weight) + median * weight).toFixed(2);
-    } else if (consensusScore >= 40) {
-        // Medium consensus: slight adjustment toward median
-        const weight = 0.2 * consensusFactor; // 0.08 to 0.14
-        return (rawRating * (1 - weight) + median * weight).toFixed(2);
-    } else {
-        // Low consensus: penalty - weight toward middle (2.5)
-        const middleRating = 2.5;
-        const weight = 0.15 * (1 - consensusFactor); // 0.09 to 0.15
-        return (rawRating * (1 - weight) + middleRating * weight).toFixed(2);
-    }
+    // Inverse relationship: low consensus = high weight toward median
+    const weight = (1 - consensusFactor) * maxWeight;
+
+    return (rawRating * (1 - weight) + median * weight).toFixed(2);
 }
 
 // Function to calculate average rating and consensus metrics from <li> elements

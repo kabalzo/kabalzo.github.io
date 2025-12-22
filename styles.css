@@ -609,12 +609,12 @@ footer a:visited {
 
 .movieboys-rating .raw-score {
     font-size: 42px;
-    color: #4CAF50;
+    /* Color set dynamically by JavaScript */
 }
 
 .movieboys-rating .weighted-score {
     font-size: 28px;
-    color: #FFA726;
+    /* Color set dynamically by JavaScript */
 }
 
 .movieboys-rating .weighted-label {
@@ -623,6 +623,22 @@ footer a:visited {
     color: goldenrod;
     font-weight: normal;
     margin-bottom: 5px;
+}
+
+/* Rating Badge */
+.rating-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+    margin: 5px 0;
+    font-family: 'Courier New', Courier, monospace;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    /* Background color set dynamically by JavaScript */
 }
 
 /* Consensus Meter Styles */
@@ -848,6 +864,11 @@ footer a:visited {
 
 	.movieboys-rating h4 {
 		font-size: 14px;
+	}
+
+	.rating-badge {
+		font-size: 10px;
+		padding: 3px 8px;
 	}
 
 	.consensus-label {

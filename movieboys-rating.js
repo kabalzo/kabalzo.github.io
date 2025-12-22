@@ -16,16 +16,6 @@ function getRatingColor(rating) {
     return '#964B00'; // Brown - Ass
 }
 
-// Function to get rating category badge text and color
-function getRatingBadge(rating) {
-    const ratingValue = parseFloat(rating);
-    if (ratingValue >= 4.00) return { text: 'GODLIKE', color: '#9400d3' };
-    if (ratingValue >= 3.00) return { text: 'GOOD', color: '#4CAF50' };
-    if (ratingValue >= 2.00) return { text: 'OK', color: '#FFC107' };
-    if (ratingValue >= 1.00) return { text: 'NOT GOOD', color: '#F44336' };
-    return { text: 'ASS', color: '#964B00' };
-}
-
 // Function to calculate standard deviation
 function calculateStandardDeviation(values, mean) {
     if (values.length <= 1) return 0;
@@ -121,13 +111,6 @@ function addMovieBoysRating(movieElement) {
         rawScoreDiv.textContent = `${ratingMetrics.raw}/5`;
         rawScoreDiv.style.color = getRatingColor(ratingMetrics.raw);
 
-        // Rating badge
-        const badge = getRatingBadge(ratingMetrics.raw);
-        const badgeDiv = document.createElement('div');
-        badgeDiv.className = 'rating-badge';
-        badgeDiv.textContent = badge.text;
-        badgeDiv.style.backgroundColor = badge.color;
-
         // Consensus meter
         const consensusDiv = document.createElement('div');
         consensusDiv.className = 'consensus-meter';
@@ -169,7 +152,6 @@ function addMovieBoysRating(movieElement) {
 
         ratingDiv.appendChild(heading);
         ratingDiv.appendChild(rawScoreDiv);
-        ratingDiv.appendChild(badgeDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
     } else {
@@ -212,13 +194,6 @@ function updateMovieBoysRating(movieElement) {
         rawScoreDiv.textContent = `${ratingMetrics.raw}/5`;
         rawScoreDiv.style.color = getRatingColor(ratingMetrics.raw);
 
-        // Rating badge
-        const badge = getRatingBadge(ratingMetrics.raw);
-        const badgeDiv = document.createElement('div');
-        badgeDiv.className = 'rating-badge';
-        badgeDiv.textContent = badge.text;
-        badgeDiv.style.backgroundColor = badge.color;
-
         // Consensus meter
         const consensusDiv = document.createElement('div');
         consensusDiv.className = 'consensus-meter';
@@ -259,7 +234,6 @@ function updateMovieBoysRating(movieElement) {
         weightedScoreDiv.style.color = getRatingColor(ratingMetrics.weighted);
 
         ratingDiv.appendChild(rawScoreDiv);
-        ratingDiv.appendChild(badgeDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
     } else {

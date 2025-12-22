@@ -6,6 +6,26 @@ function extractRating(ratingText) {
     return match ? parseFloat(match[1]) : null;
 }
 
+// Function to get color based on rating value (matches stats page bar chart)
+function getRatingColor(rating) {
+    const ratingValue = parseFloat(rating);
+    if (ratingValue >= 4.00) return '#9400d3'; // Purple - Godlike
+    if (ratingValue >= 3.00) return '#4CAF50'; // Green - Good
+    if (ratingValue >= 2.00) return '#FFC107'; // Yellow - OK
+    if (ratingValue >= 1.00) return '#F44336'; // Red - Not Good
+    return '#964B00'; // Brown - Ass
+}
+
+// Function to get rating category badge text and color
+function getRatingBadge(rating) {
+    const ratingValue = parseFloat(rating);
+    if (ratingValue >= 4.00) return { text: 'GODLIKE', color: '#9400d3' };
+    if (ratingValue >= 3.00) return { text: 'GOOD', color: '#4CAF50' };
+    if (ratingValue >= 2.00) return { text: 'OK', color: '#FFC107' };
+    if (ratingValue >= 1.00) return { text: 'NOT GOOD', color: '#F44336' };
+    return { text: 'ASS', color: '#964B00' };
+}
+
 // Function to calculate standard deviation
 function calculateStandardDeviation(values, mean) {
     if (values.length <= 1) return 0;
@@ -95,10 +115,18 @@ function addMovieBoysRating(movieElement) {
     const ratingMetrics = calculateMovieRating(movieElement);
 
     if (ratingMetrics !== null) {
-        // Raw rating score
+        // Raw rating score with color
         const rawScoreDiv = document.createElement('div');
         rawScoreDiv.className = 'score raw-score';
         rawScoreDiv.textContent = `${ratingMetrics.raw}/5`;
+        rawScoreDiv.style.color = getRatingColor(ratingMetrics.raw);
+
+        // Rating badge
+        const badge = getRatingBadge(ratingMetrics.raw);
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = 'rating-badge';
+        badgeDiv.textContent = badge.text;
+        badgeDiv.style.backgroundColor = badge.color;
 
         // Consensus meter
         const consensusDiv = document.createElement('div');
@@ -133,13 +161,15 @@ function addMovieBoysRating(movieElement) {
         consensusDiv.appendChild(consensusBarContainer);
         consensusDiv.appendChild(consensusPercent);
 
-        // Weighted rating score
+        // Weighted rating score with color
         const weightedScoreDiv = document.createElement('div');
         weightedScoreDiv.className = 'score weighted-score';
         weightedScoreDiv.innerHTML = `<span class="weighted-label">Weighted:</span> ${ratingMetrics.weighted}/5`;
+        weightedScoreDiv.style.color = getRatingColor(ratingMetrics.weighted);
 
         ratingDiv.appendChild(heading);
         ratingDiv.appendChild(rawScoreDiv);
+        ratingDiv.appendChild(badgeDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
     } else {
@@ -176,10 +206,18 @@ function updateMovieBoysRating(movieElement) {
     const ratingMetrics = calculateMovieRating(movieElement);
 
     if (ratingMetrics !== null) {
-        // Raw rating score
+        // Raw rating score with color
         const rawScoreDiv = document.createElement('div');
         rawScoreDiv.className = 'score raw-score';
         rawScoreDiv.textContent = `${ratingMetrics.raw}/5`;
+        rawScoreDiv.style.color = getRatingColor(ratingMetrics.raw);
+
+        // Rating badge
+        const badge = getRatingBadge(ratingMetrics.raw);
+        const badgeDiv = document.createElement('div');
+        badgeDiv.className = 'rating-badge';
+        badgeDiv.textContent = badge.text;
+        badgeDiv.style.backgroundColor = badge.color;
 
         // Consensus meter
         const consensusDiv = document.createElement('div');
@@ -214,12 +252,14 @@ function updateMovieBoysRating(movieElement) {
         consensusDiv.appendChild(consensusBarContainer);
         consensusDiv.appendChild(consensusPercent);
 
-        // Weighted rating score
+        // Weighted rating score with color
         const weightedScoreDiv = document.createElement('div');
         weightedScoreDiv.className = 'score weighted-score';
         weightedScoreDiv.innerHTML = `<span class="weighted-label">Weighted:</span> ${ratingMetrics.weighted}/5`;
+        weightedScoreDiv.style.color = getRatingColor(ratingMetrics.weighted);
 
         ratingDiv.appendChild(rawScoreDiv);
+        ratingDiv.appendChild(badgeDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
     } else {

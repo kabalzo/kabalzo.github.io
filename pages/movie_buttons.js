@@ -636,36 +636,43 @@ async function loadColinPicks() {
 // Generic function to load picks for any person
 async function loadPersonPicks(personName, title, subtitle) {
     const tableName = DEFAULT_TABLE;
-    
+
     document.getElementById('results').innerHTML = `<p>Loading ${personName} movies...</p>`;
-    
+
     // Load database if not already loaded
     if (!db) {
         const loaded = await loadDatabase(DEFAULT_DB_PATH);
         if (!loaded) return;
     }
-    
+
     try {
         // Query the table for movies where pick column matches the person
         const results = db.exec(getAverageSQL(tableName, `pick = '${personName}'`, 'average DESC', ''));
-        
+
         if (results.length === 0) {
-            document.getElementById('results').innerHTML = 
+            document.getElementById('results').innerHTML =
                 `<div class="error">No movies found where ${personName}'s pick is selected in table: ${tableName}</div>`;
             return;
         }
-        
-        displayPersonPicksTable(personName, results[0], title, subtitle);
-        
+
+        // Query count of Nic Movies picked by this person
+        let nicMoviesCount = 0;
+        const nicResults = db.exec(`SELECT COUNT(*) FROM ${tableName} WHERE pick = '${personName}' AND UPPER(nic) = 'Y'`);
+        if (nicResults.length > 0 && nicResults[0].values.length > 0) {
+            nicMoviesCount = nicResults[0].values[0][0] || 0;
+        }
+
+        displayPersonPicksTable(personName, results[0], title, subtitle, nicMoviesCount);
+
     } catch (error) {
-        document.getElementById('results').innerHTML = 
+        document.getElementById('results').innerHTML =
             `<div class="error">Error querying ${personName}'s picks: ${error.message}</div>`;
     }
 }
 
 // Fixed displayPersonPicksTable function with stats on left and bar graph on right
 // Fixed displayPersonPicksTable function with smaller stats container
-function displayPersonPicksTable(personName, result, title, subtitle) {
+function displayPersonPicksTable(personName, result, title, subtitle, nicMoviesCount = 0) {
     const { columns, values } = result;
     
     let html = `<h2>${title}</h2>`;
@@ -691,6 +698,7 @@ function displayPersonPicksTable(personName, result, title, subtitle) {
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Lowest:</strong> ${lowestRating}</p>`;
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Average:</strong> ${overallAverage}</p>`;
             html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Median:</strong> ${medianRating}</p>`;
+            html += `<p style="margin: 8px 0; font-size: 14px;"><strong>Nic Movies:</strong> ${nicMoviesCount}</p>`;
             html += '</div>';
             
             // Right side - Bar Chart (TAKES UP REMAINING SPACE)

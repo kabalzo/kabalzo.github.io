@@ -1,10 +1,10 @@
 *.xlsx
 *.csv
 *.py
-*.db
 data.html
 config.json
 env.js
 .DS_Store
 *.log
 node_modules/
+_movieboys.db

@@ -1,5 +1,5 @@
 // Configuration - EDIT THESE VALUES
-const DEFAULT_DB_PATH = 'movieboys.db';  // Path to your database file (adjusted for pages folder)
+const DEFAULT_DB_PATH = '../movieboys.db';  // Single shared db, lives at the repo root
 const DEFAULT_TABLE = 'nicmovies';          // Your table name
 
 let db = null;

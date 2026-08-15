@@ -8,6 +8,32 @@
 	<link rel="stylesheet" href="./styles.css" />
 	<link rel="icon" href="./images/movie-nic.ico">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css" integrity="sha512-i8+QythOYyQke6XbStjt9T4yQHhhM+9Y9yTY1fOxoDQwsQpKMEpIoSQZ8mVomtnVCf9PBvoQDnKl06gGOOD19Q==" crossorigin="anonymous" />
+	<style>
+		.movie-sort-bar {
+			display: flex;
+			flex-wrap: wrap;
+			align-items: center;
+			justify-content: center;
+			gap: 10px;
+			margin: 16px auto;
+			padding: 12px 16px;
+			max-width: 600px;
+			background-color: #333;
+			color: #ccc;
+			border-radius: 6px;
+		}
+		.movie-sort-bar label {
+			font-weight: bold;
+		}
+		.movie-sort-bar select {
+			background-color: #222;
+			color: #ccc;
+			border: 1px solid #555;
+			border-radius: 4px;
+			padding: 5px 8px;
+			font-size: 14px;
+		}
+	</style>
 </head>
 <!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
 <body>
@@ -31,6 +57,21 @@
             <li><a href="pages/nick.html">NickHub</a></li>
             <li><a href="pages/about.html">About</a></li>
 		</ul>
+	</div>
+	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
+	<div class="movie-sort-bar" id="movie-sort-bar">
+		<label for="movie-sort-field">Sort by:</label>
+		<select id="movie-sort-field">
+			<option value="id">Watch Order (Default)</option>
+			<option value="rating">Movie Boys Rating</option>
+			<option value="consensus">Consensus %</option>
+			<option value="year">Year</option>
+			<option value="nic">Nic Cage Movie</option>
+		</select>
+		<select id="movie-sort-direction">
+			<option value="desc">High → Low</option>
+			<option value="asc">Low → High</option>
+		</select>
 	</div>
 	<!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
 	<div class="container" id="movie-container">
@@ -79,6 +120,8 @@
             movie.className = 'movie';
             movie.id = row.id;
             if (row.imdb_id) movie.dataset.imdbId = row.imdb_id;
+            movie.dataset.year = row.year || '';
+            movie.dataset.nic = (row.nic || '').trim().toUpperCase();
 
             // rating-box
             const ratingBox = document.createElement('div');
@@ -187,9 +230,103 @@
             }
         }
 
+        // ---- Sorting ----
+
+        // Sensible default direction when the field itself changes.
+        const DEFAULT_SORT_DIRECTIONS = {
+            id: 'asc',
+            rating: 'desc',
+            consensus: 'desc',
+            year: 'desc',
+            nic: 'desc'
+        };
+
+        // Movie Boys Rating / Consensus % are computed by movieboys-rating.js
+        // straight from the ratings already in the DOM, so sorting by them
+        // doesn't require the visible rating widget to have rendered yet.
+        function getSortValue(movieEl, field) {
+            switch (field) {
+                case 'year':
+                    return parseInt(movieEl.dataset.year, 10) || 0;
+                case 'nic':
+                    return movieEl.dataset.nic === 'Y' ? 1 : 0;
+                case 'rating': {
+                    const metrics = (typeof calculateMovieRating === 'function') ? calculateMovieRating(movieEl) : null;
+                    return metrics ? parseFloat(metrics.raw) : -1;
+                }
+                case 'consensus': {
+                    const metrics = (typeof calculateMovieRating === 'function') ? calculateMovieRating(movieEl) : null;
+                    return metrics ? metrics.consensus : -1;
+                }
+                case 'id':
+                default:
+                    return parseInt(movieEl.id, 10) || 0;
+            }
+        }
+
+        function sortMovies() {
+            const container = document.getElementById('movie-container');
+            const fieldSelect = document.getElementById('movie-sort-field');
+            const directionSelect = document.getElementById('movie-sort-direction');
+            if (!container || !fieldSelect || !directionSelect) return;
+
+            const field = fieldSelect.value;
+            const direction = directionSelect.value;
+
+            // The id="0" tile is an empty layout placeholder, not a real movie — leave it pinned first.
+            const cards = Array.from(container.querySelectorAll('.movie')).filter(el => el.id !== '0');
+
+            cards.sort((a, b) => {
+                const va = getSortValue(a, field);
+                const vb = getSortValue(b, field);
+                if (va === vb) {
+                    // Stable tie-break so equal scores don't jump around.
+                    return (parseInt(a.id, 10) || 0) - (parseInt(b.id, 10) || 0);
+                }
+                return direction === 'asc' ? va - vb : vb - va;
+            });
+
+            cards.forEach(card => container.appendChild(card));
+
+            try {
+                localStorage.setItem('movieboys_sort_field', field);
+                localStorage.setItem('movieboys_sort_direction', direction);
+            } catch (e) {
+                // ignore storage errors (private browsing, etc.)
+            }
+        }
+
+        function initSortControls() {
+            const fieldSelect = document.getElementById('movie-sort-field');
+            const directionSelect = document.getElementById('movie-sort-direction');
+            if (!fieldSelect || !directionSelect) return;
+
+            // Restore last-used sort, defaulting to id/asc (the original watch order).
+            let savedField = 'id';
+            let savedDirection = 'asc';
+            try {
+                savedField = localStorage.getItem('movieboys_sort_field') || savedField;
+                savedDirection = localStorage.getItem('movieboys_sort_direction') || savedDirection;
+            } catch (e) {
+                // ignore storage errors
+            }
+            fieldSelect.value = savedField;
+            directionSelect.value = savedDirection;
+            if (savedField !== 'id' || savedDirection !== 'asc') {
+                sortMovies();
+            }
+
+            fieldSelect.addEventListener('change', function() {
+                directionSelect.value = DEFAULT_SORT_DIRECTIONS[fieldSelect.value] || 'asc';
+                sortMovies();
+            });
+            directionSelect.addEventListener('change', sortMovies);
+        }
+
         // Initialize ratings when page loads
         document.addEventListener('DOMContentLoaded', async function() {
             await renderMovies();
+            initSortControls();
 
             // These run only after the movie cards actually exist in the DOM.
             // (initAllMovieBoysRatings comes from movieboys-rating.js; loadAllMovieRatings

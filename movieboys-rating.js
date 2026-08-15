@@ -16,6 +16,28 @@ function getRatingColor(rating) {
     return '#964B00'; // Brown - Ass
 }
 
+// Function to get the grade label for a rating (matches stats page bar chart legend)
+function getGradeLabel(rating) {
+    const ratingValue = parseFloat(rating);
+    if (ratingValue >= 4.00) return 'Godlike';
+    if (ratingValue >= 3.00) return 'Good';
+    if (ratingValue >= 2.00) return 'OK';
+    if (ratingValue >= 1.00) return 'Not Good';
+    return 'Ass';
+}
+
+// Builds the diagonal grade stamp (e.g. "GODLIKE") overlaid on the Movie Boys Rating card
+function buildGradeStamp(ratingMetrics) {
+    const grade = getGradeLabel(ratingMetrics.raw);
+    const color = getRatingColor(ratingMetrics.raw);
+    const stamp = document.createElement('div');
+    stamp.className = 'grade-stamp';
+    stamp.textContent = grade;
+    stamp.style.color = color;
+    stamp.style.borderColor = color;
+    return stamp;
+}
+
 // Function to calculate standard deviation
 function calculateStandardDeviation(values, mean) {
     if (values.length <= 1) return 0;
@@ -173,6 +195,7 @@ function addMovieBoysRating(movieElement) {
         ratingDiv.appendChild(rawScoreDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
+        ratingDiv.appendChild(buildGradeStamp(ratingMetrics));
     } else {
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';
@@ -255,6 +278,7 @@ function updateMovieBoysRating(movieElement) {
         ratingDiv.appendChild(rawScoreDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
+        ratingDiv.appendChild(buildGradeStamp(ratingMetrics));
     } else {
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';

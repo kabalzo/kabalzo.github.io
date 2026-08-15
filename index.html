@@ -55,6 +55,30 @@
 			width: 32px;
 			flex-shrink: 0;
 		}
+		.movie.movie-milestone {
+			border: 3px solid #ffd700;
+			box-shadow: 0 0 24px rgba(255, 215, 0, 0.55), inset 0 0 24px rgba(255, 215, 0, 0.06);
+			background: linear-gradient(135deg, rgba(70, 55, 10, 0.45) 0%, rgba(26, 26, 26, 0.3) 100%);
+			padding-top: 46px;
+		}
+		.milestone-banner {
+			position: absolute;
+			top: -14px;
+			left: 50%;
+			transform: translateX(-50%);
+			background: linear-gradient(90deg, #b8860b 0%, #ffd700 50%, #b8860b 100%);
+			color: #1a1a1a;
+			font-weight: bold;
+			font-size: 13px;
+			letter-spacing: 1px;
+			text-transform: uppercase;
+			padding: 6px 20px;
+			border-radius: 20px;
+			border: 2px solid #1a1a1a;
+			box-shadow: 0 3px 8px rgba(0,0,0,0.5);
+			white-space: nowrap;
+			z-index: 5;
+		}
 	</style>
 </head>
 <!--xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-->
@@ -144,6 +168,16 @@
             if (row.imdb_id) movie.dataset.imdbId = row.imdb_id;
             movie.dataset.year = row.year || '';
             movie.dataset.nic = (row.nic || '').trim().toUpperCase();
+
+            // Golden banner for milestone movies
+            const MILESTONE_LABELS = { '100': '★ Movie #100 ★', '200': '★ Movie #200 ★' };
+            if (MILESTONE_LABELS[row.id]) {
+                movie.classList.add('movie-milestone');
+                const banner = document.createElement('div');
+                banner.className = 'milestone-banner';
+                banner.textContent = MILESTONE_LABELS[row.id];
+                movie.appendChild(banner);
+            }
 
             // rating-box
             const ratingBox = document.createElement('div');

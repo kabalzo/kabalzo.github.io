@@ -41,7 +41,7 @@
 	<a href="javascript:" id="return-to-top"><i class="icon-chevron-up"></i></a>
 
 	<!-- sql.js: reads the SQLite database file directly in the browser -->
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/sql-wasm.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/sql-wasm.js"></script>
 
 	<!-- Include the JavaScript file -->
     <script src="movieboys-rating.js"></script>
@@ -148,7 +148,7 @@
 
         async function loadMoviesFromDb() {
             const SQL = await initSqlJs({
-                locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.10.3/${file}`
+                locateFile: file => `https://cdn.jsdelivr.net/npm/sql.js@1.10.3/dist/${file}`
             });
             const response = await fetch('./movieboys.db');
             const buffer = await response.arrayBuffer();

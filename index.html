@@ -191,8 +191,17 @@
         document.addEventListener('DOMContentLoaded', async function() {
             await renderMovies();
 
-            // These run only after the movie cards actually exist in the DOM
-            initAllMovieBoysRatings();
+            // These run only after the movie cards actually exist in the DOM.
+            // (initAllMovieBoysRatings comes from movieboys-rating.js; loadAllMovieRatings
+            // comes from get-ratings.js — both normally run on their own DOMContentLoaded
+            // listeners, but those fire before our db-driven cards exist, so we call
+            // them ourselves once rendering is actually done.)
+            if (typeof initAllMovieBoysRatings === 'function') {
+                initAllMovieBoysRatings();
+            }
+            if (typeof loadAllMovieRatings === 'function') {
+                loadAllMovieRatings();
+            }
 
             // Initialize back to top button
             initBackToTopButton();

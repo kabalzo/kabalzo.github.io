@@ -26,16 +26,38 @@ function getGradeLabel(rating) {
     return 'Ass';
 }
 
-// Builds the diagonal grade stamp (e.g. "GODLIKE") overlaid on the Movie Boys Rating card
-function buildGradeStamp(ratingMetrics) {
+// Builds the top banner cluster for a card: the milestone pill (if this movie is
+// #100 or #200) stacked with the grade pill (every movie with ratings gets one).
+// Godlike movies also get a special purple card border — unless they're also a
+// milestone, in which case the milestone's gold border always wins, though both
+// pills still keep their own distinct colors.
+function buildCardBanners(movieElement, ratingMetrics) {
     const grade = getGradeLabel(ratingMetrics.raw);
-    const color = getRatingColor(ratingMetrics.raw);
-    const stamp = document.createElement('div');
-    stamp.className = 'grade-stamp';
-    stamp.textContent = grade;
-    stamp.style.color = color;
-    stamp.style.borderColor = color;
-    return stamp;
+    const gradeColor = getRatingColor(ratingMetrics.raw);
+    const isMilestone = !!movieElement.dataset.milestoneLabel;
+
+    if (grade === 'Godlike' && !isMilestone) {
+        movieElement.classList.add('movie-godlike');
+    }
+
+    const wrapper = document.createElement('div');
+    wrapper.className = 'card-banners';
+
+    if (isMilestone) {
+        const milestoneBanner = document.createElement('div');
+        milestoneBanner.className = 'milestone-banner';
+        milestoneBanner.textContent = movieElement.dataset.milestoneLabel;
+        wrapper.appendChild(milestoneBanner);
+        movieElement.classList.add('has-double-banner');
+    }
+
+    const gradeBanner = document.createElement('div');
+    gradeBanner.className = 'grade-banner';
+    gradeBanner.textContent = grade;
+    gradeBanner.style.backgroundColor = gradeColor;
+    wrapper.appendChild(gradeBanner);
+
+    return wrapper;
 }
 
 // Function to calculate standard deviation
@@ -195,7 +217,6 @@ function addMovieBoysRating(movieElement) {
         ratingDiv.appendChild(rawScoreDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
-        ratingDiv.appendChild(buildGradeStamp(ratingMetrics));
     } else {
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';
@@ -212,6 +233,12 @@ function addMovieBoysRating(movieElement) {
     } else {
         // Fallback: append to the movie element
         movieElement.appendChild(ratingDiv);
+    }
+
+    // Card-level banners (milestone + grade) live on the card itself, not inside
+    // the rating box, so they aren't affected by anything happening in there.
+    if (ratingMetrics !== null && !movieElement.querySelector('.card-banners')) {
+        movieElement.insertBefore(buildCardBanners(movieElement, ratingMetrics), movieElement.firstChild);
     }
 }
 
@@ -278,13 +305,20 @@ function updateMovieBoysRating(movieElement) {
         ratingDiv.appendChild(rawScoreDiv);
         ratingDiv.appendChild(consensusDiv);
         ratingDiv.appendChild(weightedScoreDiv);
-        ratingDiv.appendChild(buildGradeStamp(ratingMetrics));
     } else {
         const scoreDiv = document.createElement('div');
         scoreDiv.className = 'score';
         scoreDiv.textContent = 'No ratings';
         scoreDiv.style.fontSize = '16px';
         ratingDiv.appendChild(scoreDiv);
+    }
+
+    // Rebuild the card-level banners (milestone + grade) to match the refreshed metrics.
+    const oldBanners = movieElement.querySelector('.card-banners');
+    if (oldBanners) oldBanners.remove();
+    movieElement.classList.remove('movie-godlike', 'has-double-banner');
+    if (ratingMetrics !== null) {
+        movieElement.insertBefore(buildCardBanners(movieElement, ratingMetrics), movieElement.firstChild);
     }
 }
 

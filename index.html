@@ -270,6 +270,7 @@
                 const fragment = document.createDocumentFragment();
                 movies.forEach(row => fragment.appendChild(buildMovieCard(row)));
                 container.appendChild(fragment);
+                shrinkLongTitles();
             } catch (err) {
                 console.error('Failed to load movieboys.db:', err);
                 const errDiv = document.createElement('p');
@@ -277,6 +278,29 @@
                 errDiv.textContent = 'Could not load movie data.';
                 container.appendChild(errDiv);
             }
+        }
+
+        // .rating-box has a fixed height and .member-ratings is overflow:hidden, so a
+        // long title wrapping to 2 lines eats into the space the ratings list needs and
+        // the bottom rows get clipped. Shrink just that title's font until it fits on one
+        // line (down to a readable floor), so the ratings list always keeps its full space.
+        const MOVIE_TITLE_MAX_FONT_SIZE = 14; // matches .movie-title CSS
+        const MOVIE_TITLE_MIN_FONT_SIZE = 9;
+        function shrinkLongTitles() {
+            document.querySelectorAll('.movie-title h3').forEach(h3 => {
+                let fontSize = MOVIE_TITLE_MAX_FONT_SIZE;
+                h3.style.fontSize = fontSize + 'px';
+                // Force single-line temporarily so we can measure whether the text
+                // actually overflows the available width at this font size.
+                h3.style.whiteSpace = 'nowrap';
+                while (fontSize > MOVIE_TITLE_MIN_FONT_SIZE && h3.scrollWidth > h3.clientWidth) {
+                    fontSize -= 1;
+                    h3.style.fontSize = fontSize + 'px';
+                }
+                // Restore normal wrapping — at the floor size, extremely long titles may
+                // still wrap to 2 lines, but that's much less costly at the smaller size.
+                h3.style.whiteSpace = '';
+            });
         }
 
         // ---- Sorting ----

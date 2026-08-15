@@ -34,16 +34,21 @@
 			font-size: 14px;
 		}
 		.movie-meta {
-			display: flex;
+			display: grid;
+			grid-template-columns: 1fr 1fr 1fr;
 			align-items: center;
-			justify-content: space-between;
-			gap: 8px;
 			margin: 4px 0 8px;
 		}
-		.movie-meta-text {
+		.movie-meta-year,
+		.movie-meta-rated {
 			color: #ccc;
 			font-size: 14px;
 			font-weight: bold;
+			text-align: center;
+		}
+		.movie-meta-badge-slot {
+			display: flex;
+			justify-content: center;
 		}
 		.nic-badge {
 			height: 32px;
@@ -153,18 +158,29 @@
 
             const metaDiv = document.createElement('div');
             metaDiv.className = 'movie-meta';
-            const metaText = document.createElement('span');
-            metaText.className = 'movie-meta-text';
-            metaText.textContent = [row.year, row.rated].filter(Boolean).join(' • ');
-            metaDiv.appendChild(metaText);
+
+            const yearSpan = document.createElement('span');
+            yearSpan.className = 'movie-meta-year';
+            yearSpan.textContent = row.year || '';
+            metaDiv.appendChild(yearSpan);
+
+            const ratedSpan = document.createElement('span');
+            ratedSpan.className = 'movie-meta-rated';
+            ratedSpan.textContent = row.rated || '';
+            metaDiv.appendChild(ratedSpan);
+
+            const badgeSlot = document.createElement('span');
+            badgeSlot.className = 'movie-meta-badge-slot';
             if (movie.dataset.nic === 'Y') {
                 const nicBadge = document.createElement('img');
                 nicBadge.className = 'nic-badge';
                 nicBadge.src = './images/movie-nic.png';
                 nicBadge.alt = 'Nic Cage Movie';
                 nicBadge.title = 'Nic Cage Movie';
-                metaDiv.appendChild(nicBadge);
+                badgeSlot.appendChild(nicBadge);
             }
+            metaDiv.appendChild(badgeSlot);
+
             ratingBox.appendChild(metaDiv);
 
             const ratingsDiv = document.createElement('div');
